@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+Disallow: /sistema/
+
+# CRAWLERS DE IA E PESQUISA GENERATIVA (GEO)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://www.arpceletrica.site/sitemap.xml
