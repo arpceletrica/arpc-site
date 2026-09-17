@@ -10,9 +10,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="icon" href="logopng.png" type="image/png">
     
-    <!-- Supabase, reCAPTCHA Enterprise e Tailwind -->
+    <!-- Supabase, reCAPTCHA v2 e Tailwind -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -148,12 +148,9 @@
                     <input type="password" id="login-password" class="w-full bg-[#12161f] border border-zinc-800 text-white p-3 rounded-xl text-sm outline-none focus:border-yellow-500" placeholder="••••••••" required>
                 </div>
                 
-                <!-- WIDGET RECAPTCHA OFICIAL ARPC -->
-                <div id="recaptcha-container" class="my-2 w-full flex flex-col items-center justify-center min-h-[78px]">
-                    <div class="g-recaptcha" data-sitekey="6LcLdMEtAAAAAPhbCRhzQwkFImgQd-GeLoM7gY0m" data-theme="dark"></div>
-                    <div id="recaptcha-local-badge" class="hidden mt-2 text-[11px] text-amber-400 bg-amber-950/60 border border-amber-700/50 px-3 py-1 rounded-full text-center font-medium">
-                        ⚡ Modo Local: Bypass do reCAPTCHA ativo
-                    </div>
+                <!-- WIDGET RECAPTCHA V2 OFICIAL ARPC -->
+                <div class="my-2 w-full flex justify-center items-center min-h-[78px]">
+                    <div class="g-recaptcha" data-sitekey="6Lc5esEtAAAAAKa5VZh0vK2RUgxWBtdkNCipgr97" data-theme="dark"></div>
                 </div>
                 
                 <button type="submit" id="btn-login-submit" class="w-full btn-brand py-3.5 rounded-xl shadow-lg transition text-sm">
@@ -453,9 +450,9 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZnR4dGhkaGpyc3plZGxoaGVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2ODI4MjMsImV4cCI6MjEwNTI1ODgyM30.jLfAF4tch7W6RNz2z6hMyNiTxOcDLvjE0Bxl3O0neMQ';
         const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
-        // GOOGLE RECAPTCHA ENTERPRISE CREDENCIAIS (ARPC ELÉTRICA)
-        const RECAPTCHA_SITE_KEY = '6LcLdMEtAAAAAPhbCRhzQwkFImgQd-GeLoM7gY0m';
-        const RECAPTCHA_SECRET_KEY = '6LcLdMEtAAAAAP7sLxY2DSY1emv5H3A-XXr0nKbj';
+        // GOOGLE RECAPTCHA V2 CREDENCIAIS (ARPC ELÉTRICA)
+        const RECAPTCHA_SITE_KEY = '6Lc5esEtAAAAAKa5VZh0vK2RUgxWBtdkNCipgr97';
+        const RECAPTCHA_SECRET_KEY = '6Lc5esEtAAAAAHyBQq7K6EEHZ28N-GW13cGITn9B';
 
         // Detecção de ambiente local ou desenvolvimento (evita bloqueio no localhost/file)
         function isLocalEnvironment() {
@@ -473,14 +470,6 @@
         let catalogo = [];
         let fotosTemporarias = [];
 
-        // Ativa aviso visual se for ambiente local
-        window.addEventListener('DOMContentLoaded', () => {
-            if (isLocalEnvironment()) {
-                const badge = document.getElementById('recaptcha-local-badge');
-                if (badge) badge.classList.remove('hidden');
-            }
-        });
-
         async function checkSession() {
             if (!supabase) {
                 desbloquearApp();
@@ -496,10 +485,6 @@
                         loginEl.style.display = 'flex';
                         loginEl.style.opacity = '1';
                     }
-                    if (isLocalEnvironment()) {
-                        const badge = document.getElementById('recaptcha-local-badge');
-                        if (badge) badge.classList.remove('hidden');
-                    }
                 }
             } catch(e) {
                 console.error("Erro na verificação de sessão:", e);
@@ -514,17 +499,13 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            // Validação inteligente do reCAPTCHA
+            // Validação reCAPTCHA v2 Oficial
             const isLocal = isLocalEnvironment();
             let captchaToken = '';
 
-            if (typeof grecaptcha !== 'undefined') {
+            if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.getResponse === 'function') {
                 try {
-                    if (grecaptcha.enterprise && typeof grecaptcha.enterprise.getResponse === 'function') {
-                        captchaToken = grecaptcha.enterprise.getResponse();
-                    } else if (typeof grecaptcha.getResponse === 'function') {
-                        captchaToken = grecaptcha.getResponse();
-                    }
+                    captchaToken = grecaptcha.getResponse();
                 } catch(errCaptcha) {
                     console.warn("reCAPTCHA getResponse:", errCaptcha);
                 }
@@ -532,7 +513,7 @@
 
             // Se estiver em produção e o token não foi gerado, exige o preenchimento
             if (!isLocal && !captchaToken) {
-                alert("Por favor, marque a caixa de verificação do reCAPTCHA.");
+                alert("Por favor, confirme que você não é um robô no reCAPTCHA.");
                 return;
             }
 
@@ -543,14 +524,8 @@
                 const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
                 if (error) {
                     alert("Erro ao entrar: " + (error.message || "Verifique seu e-mail e senha no Supabase."));
-                    if (typeof grecaptcha !== 'undefined') {
-                        try {
-                            if (grecaptcha.enterprise && grecaptcha.enterprise.reset) {
-                                grecaptcha.enterprise.reset();
-                            } else if (grecaptcha.reset) {
-                                grecaptcha.reset();
-                            }
-                        } catch(rErr) {}
+                    if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
+                        try { grecaptcha.reset(); } catch(rErr) {}
                     }
                     if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerText = "Entrar no Sistema"; }
                 } else {
