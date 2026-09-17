@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARPC Elétrica - Gestão em Nuvem</title>
+    
+    <!-- PWA Configurações -->
+    <meta name="theme-color" content="#06080b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="icon" href="logopng.png" type="image/png">
+    
+    <!-- Supabase, reCAPTCHA Enterprise e Tailwind -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --brand-yellow: #eab308;
+            --brand-yellow-hover: #ca8a04;
+            --brand-dark: #06080b;
+        }
+
+        body { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; background-color: var(--brand-dark); color: #e5e7eb; -webkit-tap-highlight-color: transparent; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Tela de Login & reCAPTCHA */
+        #login-screen { 
+            position: fixed; 
+            inset: 0; 
+            background: #06080b; 
+            z-index: 99999; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 20px; 
+            transition: opacity 0.35s ease; 
+        }
+        .login-card {
+            background: rgba(18, 22, 31, 0.98);
+            backdrop-filter: blur(16px);
+            border-radius: 1.25rem;
+        }
+
+        .section { display: none; animation: fadeIn 0.25s ease-in-out; padding-bottom: 90px; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        input, textarea, select { 
+            width: 100%; padding: 12px; background-color: #12161f; border: 1px solid #1f2937; 
+            border-radius: 10px; color: #fff; font-family: inherit; margin-top: 4px; outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus { border-color: var(--brand-yellow); }
+        label { font-size: 0.875rem; font-weight: 600; color: #9ca3af; }
+
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        input[type="file"] { display: none; }
+        .file-upload-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #18202c; border: 1px dashed #4b5563; color: #d1d5db; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-size: 0.9rem; font-weight: 600; margin-top: 4px; transition: all 0.2s; }
+        .file-upload-btn:hover { border-color: var(--brand-yellow); color: var(--brand-yellow); }
+        
+        /* Modal de Assinatura */
+        #signature-modal { position: fixed; inset: 0; background: rgba(6, 8, 11, 0.95); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        #sig-canvas { background: #fff; border-radius: 10px; touch-action: none; width: 100%; max-width: 500px; height: 300px; border: 2px solid var(--brand-yellow); }
+
+        /* Menu Inferior */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(6, 8, 11, 0.96); backdrop-filter: blur(12px); border-top: 1px solid #1f2937; display: flex; justify-content: space-around; padding: 10px 5px 20px 5px; z-index: 50; }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 20%; background: transparent; color: #6b7280; border: none; font-size: 0.65rem; font-weight: 600; padding: 8px 0; border-radius: 8px; transition: all 0.2s; }
+        .nav-btn svg { width: 22px; height: 22px; margin: 0 auto 4px auto; }
+        .nav-btn.active { color: var(--brand-yellow); font-weight: 800; }
+
+        /* Chips do Catálogo */
+        .chip { display: inline-block; background: #161e2b; color: #e5e7eb; padding: 6px 12px; border-radius: 16px; font-size: 0.75rem; margin: 4px 4px 0 0; cursor: pointer; border: 1px solid #2d3748; transition: 0.2s; }
+        .chip:hover { background: var(--brand-yellow); border-color: var(--brand-yellow); color: #09090b; font-weight: bold; }
+
+        /* Botão Amarelo Primário */
+        .btn-brand { background: linear-gradient(135deg, #eab308, #ca8a04); color: #09090b; font-weight: 800; border: 1px solid rgba(254, 240, 138, 0.25); transition: all 0.2s; }
+        .btn-brand:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+        /* ESTILOS DE IMPRESSÃO (PDF) */
+        #print-area { display: none; }
+        @media print {
+            @page { size: A4; margin: 8mm 10mm; }
+            body * { visibility: hidden; }
+            body { background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; color: #000; }
+            .doc-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; }
+            .doc-logo { width: 60%; }
+            .doc-logo img { max-height: 75px; width: auto; margin-bottom: 8px; }
+            .doc-logo h2 { margin: 0; font-size: 13pt; font-weight: bold; margin-bottom: 2px; color: #09090b; }
+            .doc-logo p { margin: 2px 0; font-size: 9pt; color: #444; }
+            .doc-contacts { width: 40%; text-align: right; font-size: 9pt; color: #444; display: flex; flex-direction: column; justify-content: flex-end; }
+            .doc-contacts p { margin: 3px 0; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+            .doc-contacts svg { width: 16px; height: 16px; fill: currentColor; }
+            .doc-info { display: flex; justify-content: space-between; background-color: #f8fafc; padding: 8px 15px; border-radius: 4px; margin-bottom: 15px; font-size: 10pt; border: 1px solid #cbd5e1; }
+            .doc-info div p { margin: 2px 0; }
+            .doc-section { margin-bottom: 15px; }
+            .doc-section h3 { margin: 0 0 5px 0; font-size: 12pt; border-bottom: 1px solid #cbd5e1; padding-bottom: 3px; color: #0f172a; font-weight: bold; }
+            .doc-section p { margin: 0; font-size: 10pt; line-height: 1.4; text-align: justify; white-space: pre-wrap; }
+            .print-fotos-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+            .print-fotos-grid img { width: 48%; height: 200px; object-fit: cover; border: 1px solid #cbd5e1; border-radius: 6px; page-break-inside: avoid; }
+            .payment-grid { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+            .payment-conditions { width: 55%; }
+            .pix-box { width: 40%; background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 10px; font-size: 9pt; }
+            .pix-box h4 { margin: 0 0 5px 0; color: #166534; font-size: 10pt; display: flex; align-items: center; gap: 4px; font-weight: bold; }
+            .pix-box p { margin: 2px 0; line-height: 1.3; }
+            .doc-total { text-align: right; font-size: 12pt; font-weight: bold; margin-top: 5px; margin-bottom: 20px; background: #f8fafc; padding: 12px; border: 1px solid #cbd5e1; display: inline-block; float: right; border-radius: 6px; min-width: 250px; }
+            .doc-total span { font-size: 16pt; color: #000; }
+            .clearfix { clear: both; }
+            .doc-termos { font-size: 8pt; color: #555; margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 10px; page-break-inside: avoid; }
+            .doc-termos p { margin: 3px 0; text-align: justify; line-height: 1.3; }
+            .doc-signatures { display: flex; justify-content: space-between; margin-top: 35px; text-align: center; page-break-inside: avoid; }
+            .signature-box { width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+            .signature-img { max-height: 60px; width: auto; margin-bottom: -10px; }
+            .signature-line { border-top: 1px solid #000; padding-top: 5px; font-weight: bold; font-size: 10pt; width: 100%; margin-top: 30px; }
+            .signature-sub { font-size: 8pt; color: #555; }
+            .doc-footer { margin-top: 25px; text-align: center; font-size: 8pt; color: #555; border-top: 1px solid #cbd5e1; padding-top: 15px; page-break-inside: avoid; }
+            .doc-footer p { margin: 4px 0; }
+            .btn-avaliacao { display: inline-flex; align-items: center; justify-content: center; background-color: #ffffff; border: 1px solid #e2e8f0; color: #0f172a; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; font-size: 10pt; margin-top: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+            .btn-avaliacao svg { width: 18px; height: 18px; margin-right: 8px; }
+            .stars { display: flex; margin-left: 8px; gap: 2px; }
+            .stars svg { width: 14px; height: 14px; fill: #FBBC05; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN COM GOOGLE RECAPTCHA (ACESSO RESTRITO ARPC) -->
+    <div id="login-screen">
+        <div class="w-full max-w-sm login-card p-6 sm:p-8 flex flex-col items-center border border-zinc-800 shadow-2xl">
+            <img src="logopng.png" alt="ARPC Elétrica Logo" class="h-12 object-contain mb-5">
+            <h2 class="text-white text-xl font-black mb-1">Acesso Restrito</h2>
+            <p class="text-zinc-400 text-xs mb-6 text-center">Faça login para gerenciar as ordens de serviço e clientes da ARPC Elétrica.</p>
+            
+            <form id="form-login" onsubmit="realizarLogin(event)" class="flex flex-col items-center gap-4 w-full">
+                <div class="w-full text-left">
+                    <label for="login-email" class="text-xs font-bold text-zinc-400">E-mail de Acesso</label>
+                    <input type="email" id="login-email" class="w-full bg-[#12161f] border border-zinc-800 text-white p-3 rounded-xl text-sm outline-none focus:border-yellow-500" placeholder="admin@arpceletrica.site" required>
+                </div>
+                <div class="w-full text-left">
+                    <label for="login-password" class="text-xs font-bold text-zinc-400">Senha</label>
+                    <input type="password" id="login-password" class="w-full bg-[#12161f] border border-zinc-800 text-white p-3 rounded-xl text-sm outline-none focus:border-yellow-500" placeholder="••••••••" required>
+                </div>
+                
+                <!-- WIDGET RECAPTCHA OFICIAL ARPC -->
+                <div id="recaptcha-container" class="my-2 w-full flex flex-col items-center justify-center min-h-[78px]">
+                    <div class="g-recaptcha" data-sitekey="6LcLdMEtAAAAAPhbCRhzQwkFImgQd-GeLoM7gY0m" data-theme="dark"></div>
+                    <div id="recaptcha-local-badge" class="hidden mt-2 text-[11px] text-amber-400 bg-amber-950/60 border border-amber-700/50 px-3 py-1 rounded-full text-center font-medium">
+                        ⚡ Modo Local: Bypass do reCAPTCHA ativo
+                    </div>
+                </div>
+                
+                <button type="submit" id="btn-login-submit" class="w-full btn-brand py-3.5 rounded-xl shadow-lg transition text-sm">
+                    Entrar no Sistema
+                </button>
+            </form>
+            
+            <a href="../index.html" class="mt-4 text-xs text-zinc-500 hover:text-zinc-300 transition-colors">← Voltar para o Site Principal</a>
+        </div>
+    </div>
+
+    <!-- CABEÇALHO UNIFICADO COM BOTÃO VOLTAR E LOGOUT -->
+    <header class="sticky top-0 z-40 bg-[#06080b]/95 backdrop-blur-md border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
+        <a href="../index.html" class="text-xs font-semibold text-zinc-400 hover:text-yellow-400 transition-colors flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <span class="hidden sm:inline">Voltar ao Site</span>
+        </a>
+        <img src="logopng.png" alt="ARPC Elétrica Logo" class="h-8 object-contain">
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-yellow-400 bg-yellow-950/60 border border-yellow-800/60 px-2 py-0.5 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
+                Cloud OS
+            </span>
+            <button onclick="fazerLogout()" class="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-red-400 transition" title="Sair do sistema">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="p-4 w-full max-w-lg mx-auto" id="app-area">
+        
+        <!-- ABA DASHBOARD (INÍCIO) -->
+        <div id="dashboard" class="section active">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center justify-between">
+                <span>Visão Geral (Mês Atual)</span>
+                <span class="text-xs text-zinc-400 font-normal">São Luís - MA</span>
+            </h2>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="bg-zinc-900/90 p-4 rounded-xl border border-zinc-800 shadow">
+                    <p class="text-xs text-gray-400 font-semibold mb-1">Faturamento Bruto</p>
+                    <p class="text-lg font-bold text-gray-200" id="dash-faturamento">R$ 0,00</p>
+                </div>
+                <div class="bg-zinc-900/90 p-4 rounded-xl border border-zinc-800 shadow">
+                    <p class="text-xs text-gray-400 font-semibold mb-1">Despesas / Custos</p>
+                    <p class="text-lg font-bold text-red-400" id="dash-despesas">R$ 0,00</p>
+                </div>
+            </div>
+            <div class="bg-yellow-950/20 p-4 rounded-xl border border-yellow-800/40 shadow mb-6">
+                <p class="text-xs text-yellow-400 font-semibold mb-1 uppercase tracking-wider">Lucro Líquido no Bolso</p>
+                <p class="text-3xl font-black text-yellow-400" id="dash-lucro">R$ 0,00</p>
+            </div>
+
+            <!-- ALERTA DE MANUTENÇÃO PREVENTIVA -->
+            <div id="alerta-manutencao" class="mb-6 hidden">
+                <h3 class="text-sm font-bold text-yellow-400 mb-2 uppercase flex items-center gap-2">⚠️ Revisão Preventiva (1 Ano)</h3>
+                <div class="bg-yellow-950/30 border border-yellow-700/50 rounded-xl overflow-hidden">
+                    <ul id="lista-alertas" class="divide-y divide-yellow-900/30 text-sm"></ul>
+                </div>
+            </div>
+
+            <h3 class="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Gestão de Status (Últimas 10)</h3>
+            <div class="bg-zinc-900/90 rounded-xl border border-zinc-800 overflow-hidden mb-6">
+                <ul id="dash-lista-os" class="divide-y divide-zinc-800 text-sm"></ul>
+            </div>
+        </div>
+
+        <!-- ABA CLIENTES -->
+        <div id="clientes" class="section">
+            <h2 class="text-xl font-bold text-white mb-4">Novo Cliente</h2>
+            <div class="space-y-4">
+                <div><label>Nome do Cliente</label><input type="text" id="cli-nome" placeholder="Ex: Rodrigo Mendonça"></div>
+                <div><label>Telefone / WhatsApp</label><input type="tel" id="cli-tel" placeholder="98989155614"></div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="col-span-1"><label>CEP</label><input type="tel" id="cli-cep" placeholder="Números" maxlength="8"></div>
+                    <div class="col-span-2"><label>Endereço Completo</label><input type="text" id="cli-end" placeholder="Rua, Número, Bairro (Calhau, Renascença...)"></div>
+                </div>
+                <button onclick="salvarCliente()" class="w-full btn-brand py-3 px-4 rounded-xl shadow-lg">Cadastrar Cliente</button>
+            </div>
+            <h3 class="text-sm font-bold text-gray-400 mt-8 mb-3 uppercase tracking-wider">Últimos 5 Cadastros</h3>
+            <div class="bg-zinc-900/90 rounded-xl border border-zinc-800 overflow-hidden"><ul id="lista-clientes" class="divide-y divide-zinc-800 text-sm"></ul></div>
+        </div>
+
+        <!-- ABA CATÁLOGO DE PREÇOS -->
+        <div id="catalogo" class="section">
+            <h2 class="text-xl font-bold text-white mb-4">Catálogo Padrão ARPC</h2>
+            <p class="text-sm text-gray-400 mb-4">Cadastre serviços e materiais para preencher a OS rapidamente.</p>
+            <div class="space-y-4 mb-6 p-4 bg-zinc-900/90 rounded-xl border border-zinc-800">
+                <div><label>Nome do Item</label><input type="text" id="cat-nome" placeholder="Ex: Instalação de Wallbox 7,4 kW NBR 17019"></div>
+                <div>
+                    <label>Tipo</label>
+                    <select id="cat-tipo">
+                        <option value="servico">Mão de Obra Especializada</option>
+                        <option value="material">Material / Componente</option>
+                    </select>
+                </div>
+                <button onclick="salvarItemCatalogo()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 rounded-xl transition border border-zinc-700">Adicionar ao Catálogo</button>
+            </div>
+            <h3 class="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Itens Salvos</h3>
+            <div class="bg-zinc-900/90 rounded-xl border border-zinc-800 overflow-hidden"><ul id="lista-catalogo" class="divide-y divide-zinc-800 text-sm"></ul></div>
+        </div>
+
+        <!-- ABA ORÇAMENTOS -->
+        <div id="orcamentos" class="section">
+            <h2 class="text-xl font-bold text-white mb-4">Descrever Serviço</h2>
+            <div class="space-y-4">
+                
+                <div>
+                    <label>Selecione o Cliente</label>
+                    <input type="text" id="busca-cliente" placeholder="🔍 Buscar cliente..." oninput="filtrarClientesDropdown()" class="mb-2 bg-zinc-800 text-sm border-zinc-700">
+                    <select id="orc-cliente"></select>
+                </div>
+
+                <div id="area-catalogo-chips" class="hidden pb-2 border-b border-zinc-800">
+                    <label>Auto-completar do Catálogo:</label>
+                    <div id="chips-catalogo"></div>
+                </div>
+                
+                <div><label>Mão de Obra (Serviços)</label><textarea id="orc-desc" rows="3" placeholder="Instalação de circuito exclusivo para carregador veicular Wallbox..."></textarea></div>
+                
+                <div>
+                    <label>Fornecimento de Materiais</label>
+                    <select id="orc-materiais-status">
+                        <option value="Por conta do cliente (Não inclusos)">Por conta do cliente (Não inclusos)</option>
+                        <option value="Fornecidos pela ARPC Elétrica (Inclusos no valor)">Fornecidos pela ARPC Elétrica (Inclusos no valor)</option>
+                    </select>
+                </div>
+                <div><label>Lista de Materiais (Opcional)</label><textarea id="orc-materiais" rows="2" placeholder="Ex: Disjuntor Curva C 32A, Dispositivo DR Tipo A, Cabos 6mm²..."></textarea></div>
+                
+                <div>
+                    <label>Fotos (Câmera ou Galeria)</label>
+                    <label for="orc-fotos" class="file-upload-btn">📸 Anexar Imagens da Instalação</label>
+                    <input type="file" id="orc-fotos" accept="image/*" multiple onchange="processarFotos(event)">
+                    <div id="preview-fotos" class="flex flex-wrap gap-2 mt-2"></div>
+                </div>
+
+                <div><label>Valor Total do Serviço (R$)</label><input type="number" id="orc-valor" placeholder="1200.00" inputmode="decimal"></div>
+                
+                <div>
+                    <label class="text-red-400">Suas Despesas Internas (R$)</label>
+                    <p class="text-xs text-gray-500 mb-1">Combustível, ajudante, etc. (Controle interno, não aparece no PDF).</p>
+                    <input type="number" id="orc-despesas" placeholder="0.00" class="border-red-900/50 bg-red-950/20" inputmode="decimal">
+                </div>
+
+                <button onclick="salvarOrcamento()" class="w-full btn-brand py-3.5 px-4 rounded-xl shadow-lg mt-2">Salvar Orçamento</button>
+            </div>
+        </div>
+
+        <!-- ABA IMPRESSÃO (PDF E ZAP) -->
+        <div id="os" class="section">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-950/40 text-yellow-400 mb-3 border border-yellow-800/50">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <h2 class="text-xl font-bold text-white">Emitir e Enviar</h2>
+                <p class="text-xs text-zinc-400 mt-1">Gera PDF para impressão e envia proposta via WhatsApp</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div><label>Selecione o Serviço Salvo</label><select id="os-orcamento" onchange="verificarAssinatura()"></select></div>
+                
+                <div class="bg-zinc-900/90 p-4 rounded-xl border border-zinc-800 flex items-center justify-between">
+                    <div>
+                        <p class="font-bold text-sm text-white">Assinatura Digital</p>
+                        <p class="text-xs text-gray-400" id="status-assinatura">Nenhuma assinatura.</p>
+                    </div>
+                    <button onclick="abrirModalAssinatura()" class="bg-zinc-800 hover:bg-zinc-700 text-yellow-400 border border-yellow-500/30 text-xs font-bold py-2 px-4 rounded-xl">Coletar ✍️</button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 pt-2 border-t border-zinc-800 mt-4">
+                    <button onclick="imprimirEEnviar('Orçamento')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl flex justify-center items-center gap-2 shadow-lg transition">
+                        📄 Gerar Orçamento + Zap
+                    </button>
+                    <button onclick="imprimirEEnviar('OS')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl flex justify-center items-center gap-2 shadow-lg transition">
+                        📋 Gerar Ordem de Serviço + Zap
+                    </button>
+                    <button onclick="imprimirEEnviar('Recibo')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl flex justify-center items-center gap-2 shadow-lg transition">
+                        💰 Gerar Recibo + Zap
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ASSINATURA -->
+    <div id="signature-modal">
+        <h3 class="text-white font-bold mb-4 text-lg">Assinatura do Cliente</h3>
+        <canvas id="sig-canvas"></canvas>
+        <div class="flex gap-4 mt-6 w-full max-w-sm">
+            <button onclick="fecharModalAssinatura()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white py-3 rounded-xl font-bold">Cancelar</button>
+            <button onclick="limparAssinatura()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold">Limpar</button>
+            <button onclick="salvarAssinatura()" class="flex-1 btn-brand py-3 rounded-xl font-bold">Salvar</button>
+        </div>
+    </div>
+
+    <!-- MENU INFERIOR (5 Botões) -->
+    <nav class="bottom-nav">
+        <button onclick="mudarAba('dashboard')" class="nav-btn active" id="tab-dashboard">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span>Início</span>
+        </button>
+        <button onclick="mudarAba('clientes')" class="nav-btn" id="tab-clientes">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <span>Clientes</span>
+        </button>
+        <button onclick="mudarAba('catalogo')" class="nav-btn" id="tab-catalogo">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <span>Catálogo</span>
+        </button>
+        <button onclick="mudarAba('orcamentos')" class="nav-btn" id="tab-orcamentos">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            <span>Serviço</span>
+        </button>
+        <button onclick="mudarAba('os')" class="nav-btn" id="tab-os">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            <span>PDF/Zap</span>
+        </button>
+    </nav>
+
+    <!-- ÁREA DE IMPRESSÃO (PDF) COM IDENTIDADE ARPC ELÉTRICA -->
+    <div id="print-area">
+        <div class="doc-header">
+            <div class="doc-logo">
+                <img src="logopng.png" alt="ARPC Elétrica Logo">
+                <h2>ARPC Elétrica • Engenharia & Instalações</h2>
+                <p>Especialista em Wallbox conforme NBR 17019 e NBR 5410</p>
+                <p>São Luís - Maranhão</p>
+            </div>
+            <div class="doc-contacts">
+                <p>
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg> 
+                    arpceletrica.site
+                </p>
+                <p>
+                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> 
+                    @arpceletrica
+                </p>
+                <p>
+                    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> 
+                    (98) 8915-5614
+                </p>
+            </div>
+        </div>
+
+        <div class="doc-info" id="print-info"></div>
+        <div class="doc-section"><h3>Serviços e Mão de Obra</h3><p id="print-servicos"></p></div>
+        <div class="doc-section" id="print-section-materiais"><h3>Materiais e Equipamentos</h3><p id="print-materiais"></p></div>
+        <div class="doc-section" id="print-section-fotos" style="display: none;"><h3>Registro Fotográfico</h3><div class="print-fotos-grid" id="print-fotos-container"></div></div>
+        <div class="doc-section"><h3>Observações Técnicas</h3><p id="print-obs"></p></div>
+        
+        <div class="doc-section">
+            <div class="payment-grid">
+                <div class="payment-conditions">
+                    <h3>Condições de Pagamento</h3>
+                    <p>• 50% de entrada para agendamento e reserva de materiais;<br>• 50% na conclusão e entrega técnica com testes operacionais.</p>
+                </div>
+                <div class="pix-box">
+                    <h4><img src="Pix_logo.png" alt="Pix" style="height: 18px; width: auto; margin-right: 6px;">Chave PIX</h4>
+                    <p>Chave (Telefone): <strong>9889155614</strong></p>
+                    <p>Beneficiário: <strong>ARPC Elétrica</strong></p>
+                    <p>Cidade: <strong>São Luís - MA</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="doc-total">TOTAL GERAL: R$ <span id="print-valor-total">0,00</span></div>
+        <div class="clearfix"></div>
+
+        <div class="doc-termos">
+            <p><strong>Termo de Responsabilidade:</strong> A ARPC Elétrica não se responsabiliza por tubulações obstruídas ou danos estruturais ocultos na alvenaria do imóvel não sinalizados previamente.</p>
+            <p><strong>Garantia de Qualidade:</strong> Garantia técnica de 90 dias para a mão de obra prestada, conforme art. 26 do Código de Defesa do Consumidor (CDC) e em conformidade com as normas ABNT NBR 5410 e NBR 17019.</p>
+        </div>
+
+        <div class="doc-signatures">
+            <div class="signature-box"><div class="signature-line">ARPC Elétrica</div><div class="signature-sub">Responsável Técnico</div></div>
+            <div class="signature-box" id="print-box-cliente">
+                <img id="print-img-assinatura" class="signature-img" style="display:none;" src="">
+                <div class="signature-line" id="print-assinatura-cliente">Nome do Cliente</div>
+                <div class="signature-sub">Cliente / Responsável</div>
+            </div>
+        </div>
+
+        <div class="doc-footer">
+            <p id="print-rodape-data" style="font-size: 11pt; font-weight: 600; margin-bottom: 12px;"></p>
+            <p id="print-validade" style="margin-bottom: 15px; color: #dc2626;"></p>
+            <a href="https://www.arpceletrica.site" target="_blank" class="btn-avaliacao">
+                <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                ARPC Elétrica • Atendimento em São Luís
+                <div class="stars"><svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg></div>
+            </a>
+        </div>
+    </div>
+
+    <!-- SCRIPT DO SISTEMA E SUPABASE -->
+    <script>
+        // CREDENCIAIS SUPABASE DA ARPC ELÉTRICA
+        const supabaseUrl = 'https://xlftxthdhjrszedlhhel.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZnR4dGhkaGpyc3plZGxoaGVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2ODI4MjMsImV4cCI6MjEwNTI1ODgyM30.jLfAF4tch7W6RNz2z6hMyNiTxOcDLvjE0Bxl3O0neMQ';
+        const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
+
+        // GOOGLE RECAPTCHA ENTERPRISE CREDENCIAIS (ARPC ELÉTRICA)
+        const RECAPTCHA_SITE_KEY = '6LcLdMEtAAAAAPhbCRhzQwkFImgQd-GeLoM7gY0m';
+        const RECAPTCHA_SECRET_KEY = '6LcLdMEtAAAAAP7sLxY2DSY1emv5H3A-XXr0nKbj';
+
+        // Detecção de ambiente local ou desenvolvimento (evita bloqueio no localhost/file)
+        function isLocalEnvironment() {
+            const host = window.location.hostname;
+            const proto = window.location.protocol;
+            return proto === 'file:' || 
+                   ['localhost', '127.0.0.1', '::1', ''].includes(host) || 
+                   host.startsWith('192.168.') || 
+                   host.startsWith('10.') || 
+                   host.endsWith('.local');
+        }
+
+        let clientes = [];
+        let orcamentos = [];
+        let catalogo = [];
+        let fotosTemporarias = [];
+
+        // Ativa aviso visual se for ambiente local
+        window.addEventListener('DOMContentLoaded', () => {
+            if (isLocalEnvironment()) {
+                const badge = document.getElementById('recaptcha-local-badge');
+                if (badge) badge.classList.remove('hidden');
+            }
+        });
+
+        async function checkSession() {
+            if (!supabase) {
+                desbloquearApp();
+                return;
+            }
+            try {
+                const { data, error } = await supabase.auth.getSession();
+                if (data?.session) {
+                    desbloquearApp();
+                } else {
+                    const loginEl = document.getElementById('login-screen');
+                    if (loginEl) {
+                        loginEl.style.display = 'flex';
+                        loginEl.style.opacity = '1';
+                    }
+                    if (isLocalEnvironment()) {
+                        const badge = document.getElementById('recaptcha-local-badge');
+                        if (badge) badge.classList.remove('hidden');
+                    }
+                }
+            } catch(e) {
+                console.error("Erro na verificação de sessão:", e);
+                desbloquearApp();
+            }
+        }
+
+        async function realizarLogin(e) {
+            e.preventDefault();
+            if (!supabase) { alert("Erro: Supabase não conectado."); return; }
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Validação inteligente do reCAPTCHA
+            const isLocal = isLocalEnvironment();
+            let captchaToken = '';
+
+            if (typeof grecaptcha !== 'undefined') {
+                try {
+                    if (grecaptcha.enterprise && typeof grecaptcha.enterprise.getResponse === 'function') {
+                        captchaToken = grecaptcha.enterprise.getResponse();
+                    } else if (typeof grecaptcha.getResponse === 'function') {
+                        captchaToken = grecaptcha.getResponse();
+                    }
+                } catch(errCaptcha) {
+                    console.warn("reCAPTCHA getResponse:", errCaptcha);
+                }
+            }
+
+            // Se estiver em produção e o token não foi gerado, exige o preenchimento
+            if (!isLocal && !captchaToken) {
+                alert("Por favor, marque a caixa de verificação do reCAPTCHA.");
+                return;
+            }
+
+            const btnSubmit = document.getElementById('btn-login-submit');
+            if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.innerText = "Autenticando..."; }
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
+                if (error) {
+                    alert("Erro ao entrar: " + (error.message || "Verifique seu e-mail e senha no Supabase."));
+                    if (typeof grecaptcha !== 'undefined') {
+                        try {
+                            if (grecaptcha.enterprise && grecaptcha.enterprise.reset) {
+                                grecaptcha.enterprise.reset();
+                            } else if (grecaptcha.reset) {
+                                grecaptcha.reset();
+                            }
+                        } catch(rErr) {}
+                    }
+                    if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerText = "Entrar no Sistema"; }
+                } else {
+                    desbloquearApp();
+                    await initApp();
+                }
+            } catch(err) {
+                alert("Falha na autenticação: " + err.message);
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerText = "Entrar no Sistema"; }
+            }
+        }
+
+        function desbloquearApp() {
+            const loginEl = document.getElementById('login-screen');
+            if (loginEl) {
+                loginEl.style.opacity = '0';
+                setTimeout(() => {
+                    loginEl.style.display = 'none';
+                }, 350);
+            }
+        }
+
+        async function fazerLogout() {
+            if (supabase) {
+                await supabase.auth.signOut();
+            }
+            window.location.reload();
+        }
+
+        async function initApp() {
+            try {
+                if(supabase) {
+                    const [resCli, resServ, resCat] = await Promise.all([
+                        supabase.from('clientes').select('*'),
+                        supabase.from('servicos').select('*'),
+                        supabase.from('catalogo').select('*')
+                    ]);
+                    
+                    if(resCli.data) clientes = resCli.data.map(c => ({id: c.id, nome: c.nome, tel: c.telefone, end: c.endereco}));
+                    if(resServ.data) {
+                        orcamentos = resServ.data.map(s => ({
+                            id: s.id, osNumber: s.os_number, clienteId: s.cliente_id, desc: s.descricao, obs: s.observacoes,
+                            materiaisStatus: s.materiais_status, materiaisLista: s.materiais_lista, valor: s.valor_servico,
+                            despesas: s.despesas, status: s.status, data: s.data_servico, assinaturaCliente: s.assinatura_cliente,
+                            fotos: s.fotos || [] 
+                        }));
+                    }
+                    if(resCat.data) catalogo = resCat.data;
+                }
+            } catch(e) { console.error("Erro Supabase:", e); }
+            atualizarTelas();
+        }
+
+        window.onload = () => {
+            checkSession();
+            initApp();
+        };
+
+        function mudarAba(aba) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            const targetSec = document.getElementById(aba);
+            const targetBtn = document.getElementById('tab-' + aba);
+            if(targetSec) targetSec.classList.add('active');
+            if(targetBtn) targetBtn.classList.add('active');
+            window.scrollTo(0, 0);
+            atualizarTelas();
+        }
+
+        const cepInput = document.getElementById('cli-cep');
+        if(cepInput) {
+            cepInput.addEventListener('input', async function(e) {
+                let cep = e.target.value.replace(/\D/g, '');
+                if (cep.length === 8) {
+                    try {
+                        let res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                        let data = await res.json();
+                        if(!data.erro) {
+                            document.getElementById('cli-end').value = `${data.logradouro}, Número - ${data.bairro}, ${data.localidade}/${data.uf}`;
+                            document.getElementById('cli-end').focus();
+                        }
+                    } catch(err) { console.log('Erro ao buscar CEP'); }
+                }
+            });
+        }
+
+        async function salvarCliente() {
+            const nome = document.getElementById('cli-nome').value;
+            const tel = document.getElementById('cli-tel').value;
+            const end = document.getElementById('cli-end').value;
+            if(!nome) return alert('Preencha pelo menos o nome do cliente!');
+            
+            const tempId = Date.now();
+            clientes.push({ id: tempId, nome, tel, end });
+            atualizarTelas();
+            
+            if(supabase) {
+                try {
+                    const { data } = await supabase.from('clientes').insert([{ nome, telefone: tel, endereco: end }]).select();
+                    if(data && data.length > 0) {
+                        const idx = clientes.findIndex(c => c.id === tempId);
+                        if(idx > -1) clientes[idx].id = data[0].id;
+                        atualizarTelas();
+                    }
+                } catch(e) { console.error(e); }
+            }
+
+            document.getElementById('cli-nome').value = ''; document.getElementById('cli-tel').value = ''; 
+            const cepE = document.getElementById('cli-cep'); if(cepE) cepE.value = ''; 
+            document.getElementById('cli-end').value = '';
+            alert('Cliente cadastrado com sucesso!');
+        }
+
+        function filtrarClientesDropdown() {
+            const buscaEl = document.getElementById('busca-cliente');
+            const termo = buscaEl ? buscaEl.value.toLowerCase() : '';
+            const filtrados = clientes.filter(c => c.nome.toLowerCase().includes(termo));
+            const options = [...filtrados].sort((a, b) => a.nome.localeCompare(b.nome)).map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+            const orcCliente = document.getElementById('orc-cliente');
+            if(orcCliente) orcCliente.innerHTML = '<option value="" disabled selected>Selecione o cliente abaixo...</option>' + options;
+        }
+
+        async function salvarItemCatalogo() {
+            const nome = document.getElementById('cat-nome').value;
+            const tipo = document.getElementById('cat-tipo').value;
+            if(!nome) return alert("Preencha o nome do item!");
+            
+            const tempId = Date.now();
+            catalogo.push({ id: tempId, nome, tipo });
+            atualizarTelas();
+
+            if(supabase) {
+                try {
+                    const { data } = await supabase.from('catalogo').insert([{ nome, tipo }]).select();
+                    if(data && data.length > 0) {
+                        const idx = catalogo.findIndex(c => c.id === tempId);
+                        if(idx > -1) catalogo[idx].id = data[0].id;
+                        atualizarTelas();
+                    }
+                } catch(e) { console.error(e); }
+            }
+            document.getElementById('cat-nome').value = '';
+        }
+
+        async function removerItemCatalogo(id) {
+            catalogo = catalogo.filter(c => c.id !== id);
+            atualizarTelas();
+            if(supabase) {
+                try { await supabase.from('catalogo').delete().eq('id', id); } catch(e) {}
+            }
+        }
+
+        function adicionarDoCatalogo(id) {
+            const item = catalogo.find(c => c.id === id);
+            if(!item) return;
+            if(item.tipo === 'servico') {
+                const descArea = document.getElementById('orc-desc');
+                descArea.value += (descArea.value ? '\n+ ' : '') + item.nome;
+            } else {
+                const matArea = document.getElementById('orc-materiais');
+                matArea.value += (matArea.value ? '\n+ ' : '') + item.nome;
+            }
+        }
+
+        function processarFotos(event) {
+            const files = event.target.files;
+            if(!files.length) return;
+            for(let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width; let h = img.height;
+                        if (w > h) { if (w > 800) { h *= 800 / w; w = 800; } } else { if (h > 800) { w *= 800 / h; h = 800; } }
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        fotosTemporarias.push(canvas.toDataURL('image/jpeg', 0.6));
+                        atualizarPreviewFotos();
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        function atualizarPreviewFotos() {
+            document.getElementById('preview-fotos').innerHTML = fotosTemporarias.map((src, i) => `<div class="relative w-16 h-16"><img src="${src}" class="w-full h-full object-cover rounded-lg border border-zinc-700 shadow"><button onclick="removerFoto(${i})" class="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow">✕</button></div>`).join('');
+        }
+        function removerFoto(i) { fotosTemporarias.splice(i, 1); atualizarPreviewFotos(); }
+
+        function gerarNumeroOS() {
+            const anoAtual = new Date().getFullYear().toString();
+            const osAno = orcamentos.filter(o => o.osNumber && o.osNumber.startsWith(anoAtual + '-'));
+            let maior = 0;
+            osAno.forEach(o => { const p = o.osNumber.split('-'); if(p.length === 2 && parseInt(p[1]) > maior) maior = parseInt(p[1]); });
+            return `${anoAtual}-${(maior + 1).toString().padStart(3, '0')}`;
+        }
+
+        async function salvarOrcamento() {
+            const clienteId = document.getElementById('orc-cliente').value;
+            const desc = document.getElementById('orc-desc').value;
+            const obs = document.getElementById('orc-obs').value;
+            const materiaisStatus = document.getElementById('orc-materiais-status').value;
+            const materiaisLista = document.getElementById('orc-materiais').value;
+            const valor = document.getElementById('orc-valor').value || 0;
+            const despesasEl = document.getElementById('orc-despesas');
+            const despesas = despesasEl ? despesasEl.value : 0;
+
+            if(!clienteId || !desc) return alert('Preencha o cliente e a descrição do serviço!');
+            
+            const numOs = gerarNumeroOS();
+            const dataServ = new Date().toLocaleDateString('pt-BR');
+            const tempId = Date.now();
+
+            const novaOs = { 
+                id: tempId, osNumber: numOs, clienteId: parseInt(clienteId), 
+                desc, obs, materiaisStatus, materiaisLista, valor: parseFloat(valor), despesas: parseFloat(despesas),
+                data: dataServ, status: 'Pendente', fotos: [...fotosTemporarias]
+            };
+            
+            orcamentos.push(novaOs);
+            atualizarTelas();
+
+            document.getElementById('orc-desc').value = ''; document.getElementById('orc-obs').value = ''; 
+            document.getElementById('orc-materiais').value = ''; document.getElementById('orc-valor').value = ''; 
+            if(despesasEl) despesasEl.value = ''; document.getElementById('orc-fotos').value = ''; 
+            fotosTemporarias = []; atualizarPreviewFotos();
+            
+            alert('Serviço salvo com sucesso! Indo para a aba de PDF/Zap.');
+            mudarAba('os');
+
+            if(supabase) {
+                try {
+                    const { data } = await supabase.from('servicos').insert([{
+                        cliente_id: parseInt(clienteId), os_number: numOs, descricao: desc, observacoes: obs,
+                        materiais_status: materiaisStatus, materiais_lista: materiaisLista,
+                        valor_servico: parseFloat(valor), despesas: parseFloat(despesas),
+                        data_servico: dataServ, status: 'Pendente'
+                    }]).select();
+
+                    if(data && data.length > 0) {
+                        const idx = orcamentos.findIndex(o => o.id === tempId);
+                        if(idx > -1) orcamentos[idx].id = data[0].id;
+                        atualizarTelas();
+                    }
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        function atualizarDashboard() {
+            const dashFat = document.getElementById('dash-faturamento');
+            if(!dashFat) return;
+            const mesAtual = new Date().toLocaleDateString('pt-BR').substring(3);
+            let faturamento = 0, despesas = 0;
+            
+            orcamentos.forEach(o => {
+                if (o.status === 'Concluído' && o.data && o.data.substring(3) === mesAtual) {
+                    faturamento += parseFloat(o.valor || 0);
+                    despesas += parseFloat(o.despesas || 0);
+                }
+            });
+
+            dashFat.innerText = `R$ ${faturamento.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('dash-despesas').innerText = `R$ ${despesas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('dash-lucro').innerText = `R$ ${(faturamento - despesas).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+            const ultimosOS = orcamentos.slice(-10).reverse();
+            document.getElementById('dash-lista-os').innerHTML = ultimosOS.length === 0 ? '<li class="p-4 text-gray-500 text-center text-xs">Nenhuma OS gerada.</li>' : ultimosOS.map(o => {
+                const c = clientes.find(cli => cli.id === o.clienteId);
+                return `<li class="p-3 flex justify-between items-center hover:bg-zinc-800 transition gap-2">
+                    <div class="flex-1 min-w-0"><p class="font-bold text-gray-200 text-sm truncate">${o.osNumber}</p><p class="text-xs text-gray-400 truncate">${c ? c.nome : 'Removido'}</p></div>
+                    <select onchange="mudarStatusOS(${o.id}, this.value)" class="text-[10px] p-1.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white w-28 shrink-0 outline-none">
+                        <option value="Pendente" ${o.status === 'Pendente' ? 'selected' : ''}>🟡 Pendente</option>
+                        <option value="Aprovado" ${o.status === 'Aprovado' ? 'selected' : ''}>🟢 Aprovado</option>
+                        <option value="Concluído" ${o.status === 'Concluído' ? 'selected' : ''}>🔵 Concluído</option>
+                    </select></li>`;
+            }).join('');
+
+            const alertas = [];
+            orcamentos.forEach(o => {
+                if(o.status === 'Concluído' && o.data && o.data.includes('/')) {
+                    const partes = o.data.split('/');
+                    const dataOS = new Date(partes[2], partes[1] - 1, partes[0]);
+                    const diffDays = Math.ceil(Math.abs(new Date() - dataOS) / (1000 * 60 * 60 * 24));
+                    if(diffDays >= 330 && diffDays <= 390) alertas.push(o);
+                }
+            });
+            const divAlerta = document.getElementById('alerta-manutencao');
+            if(alertas.length > 0) {
+                divAlerta.classList.remove('hidden');
+                document.getElementById('lista-alertas').innerHTML = alertas.map(o => {
+                    const c = clientes.find(cli => cli.id === o.clienteId);
+                    if(!c) return '';
+                    const numRaw = c.tel ? c.tel.replace(/\D/g, '') : '';
+                    const txt = encodeURIComponent(`Olá ${c.nome}! Aqui é da equipe técnica da *ARPC Elétrica*. Nosso sistema avisou que faz cerca de 1 ano desde a nossa última manutenção elétrica. Gostaria de agendar uma revisão preventiva?`);
+                    return `<li class="p-3 flex justify-between items-center"><p class="text-yellow-400 font-bold text-xs truncate">${c.nome} <span class="text-yellow-600 font-normal ml-1">${o.data}</span></p><a href="https://api.whatsapp.com/send?phone=55${numRaw}&text=${txt}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shrink-0 transition">Chamar</a></li>`;
+                }).join('');
+            } else { divAlerta.classList.add('hidden'); }
+        }
+
+        async function mudarStatusOS(id, st) {
+            const target = orcamentos.find(o => o.id === id);
+            if(target) target.status = st;
+            atualizarDashboard();
+            if(supabase) {
+                try { await supabase.from('servicos').update({status: st}).eq('id', id); } catch(e) {}
+            }
+        }
+
+        function atualizarTelas() {
+            try { atualizarDashboard(); } catch(e) {}
+            
+            const listaClientes = document.getElementById('lista-clientes');
+            if(listaClientes) {
+                if(clientes.length === 0) listaClientes.innerHTML = '<li class="p-4 text-gray-500 text-center">Nenhum cliente cadastrado.</li>';
+                else listaClientes.innerHTML = clientes.slice(-5).reverse().map(c => `<li class="p-3 flex justify-between items-center hover:bg-zinc-800 transition"><div><p class="font-bold text-gray-200">${c.nome}</p><p class="text-xs text-gray-500">${c.tel || 'Sem telefone'}</p></div></li>`).join('');
+            }
+            
+            filtrarClientesDropdown();
+            
+            const listaCat = document.getElementById('lista-catalogo');
+            if(listaCat) listaCat.innerHTML = catalogo.length === 0 ? '<li class="p-4 text-gray-500 text-center text-xs">Nenhum item salvo no catálogo.</li>' : catalogo.map(c => `<li class="p-3 flex justify-between items-center hover:bg-zinc-800 transition"><div><p class="font-bold text-gray-200">${c.nome}</p><p class="text-xs text-gray-500">${c.tipo === 'servico' ? 'Mão de Obra' : 'Material'}</p></div><button onclick="removerItemCatalogo(${c.id})" class="text-red-500 font-bold px-2">X</button></li>`).join('');
+
+            const areaChips = document.getElementById('area-catalogo-chips');
+            const chipsCat = document.getElementById('chips-catalogo');
+            if(areaChips && chipsCat) {
+                if(catalogo.length > 0) {
+                    areaChips.classList.remove('hidden');
+                    chipsCat.innerHTML = catalogo.map(c => `<span class="chip" onclick="adicionarDoCatalogo(${c.id})">+ ${c.nome}</span>`).join('');
+                } else { areaChips.classList.add('hidden'); }
+            }
+
+            const selectOS = document.getElementById('os-orcamento');
+            if(selectOS) {
+                const optionsOrcamentos = orcamentos.slice(-10).reverse().map(o => {
+                    const c = clientes.find(cli => cli.id === o.clienteId);
+                    return `<option value="${o.id}">OS ${o.osNumber} | ${c ? c.nome : 'Removido'} - R$ ${(o.valor||0).toLocaleString('pt-BR', {minimumFractionDigits:2})}</option>`;
+                }).join('');
+                selectOS.innerHTML = '<option value="" disabled selected>Escolha o serviço salvo...</option>' + optionsOrcamentos;
+            }
+            try { verificarAssinatura(); } catch(e) {}
+        }
+
+        // ASSINATURA NA TELA
+        const sigCanvas = document.getElementById('sig-canvas');
+        const sigCtx = sigCanvas ? sigCanvas.getContext('2d') : null;
+        let assinando = false;
+
+        function resizeCanvas() { if(sigCanvas) { sigCanvas.width = sigCanvas.offsetWidth; sigCanvas.height = sigCanvas.offsetHeight; } }
+        function getCoords(e) { const rect = sigCanvas.getBoundingClientRect(); const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; return { x: cx - rect.left, y: cy - rect.top }; }
+
+        if(sigCanvas) {
+            sigCanvas.addEventListener('mousedown', (e) => { assinando = true; const pos = getCoords(e); sigCtx.beginPath(); sigCtx.moveTo(pos.x, pos.y); });
+            sigCanvas.addEventListener('mousemove', (e) => { if(assinando) { const pos = getCoords(e); sigCtx.lineTo(pos.x, pos.y); sigCtx.stroke(); } });
+            sigCanvas.addEventListener('mouseup', () => { assinando = false; });
+            sigCanvas.addEventListener('touchstart', (e) => { assinando = true; const pos = getCoords(e); sigCtx.beginPath(); sigCtx.moveTo(pos.x, pos.y); });
+            sigCanvas.addEventListener('touchmove', (e) => { if(assinando) { const pos = getCoords(e); sigCtx.lineTo(pos.x, pos.y); sigCtx.stroke(); } e.preventDefault(); });
+            sigCanvas.addEventListener('touchend', () => { assinando = false; });
+        }
+
+        function abrirModalAssinatura() {
+            const id = document.getElementById('os-orcamento').value;
+            if(!id) return alert('Selecione uma OS na lista primeiro!');
+            document.getElementById('signature-modal').style.display = 'flex';
+            resizeCanvas(); sigCtx.lineWidth = 2; sigCtx.lineCap = 'round'; sigCtx.strokeStyle = '#000';
+            limparAssinatura();
+        }
+        function fecharModalAssinatura() { document.getElementById('signature-modal').style.display = 'none'; }
+        function limparAssinatura() { if(sigCtx) sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height); }
+        
+        async function salvarAssinatura() {
+            const id = document.getElementById('os-orcamento').value;
+            const os = orcamentos.find(o => o.id == id);
+            if(os) {
+                const dataUri = sigCanvas.toDataURL('image/png');
+                os.assinaturaCliente = dataUri;
+                fecharModalAssinatura(); verificarAssinatura(); alert('Assinatura coletada com sucesso!');
+                if(supabase) {
+                    try { await supabase.from('servicos').update({assinatura_cliente: dataUri}).eq('id', id); } catch(e) {}
+                }
+            }
+        }
+
+        function verificarAssinatura() {
+            const id = document.getElementById('os-orcamento');
+            const status = document.getElementById('status-assinatura');
+            if(!id || !status) return;
+            if(!id.value) { status.innerText = 'Nenhuma assinatura.'; return; }
+            const os = orcamentos.find(o => o.id == id.value);
+            if(os && os.assinaturaCliente) { status.innerText = '✅ Assinada pelo cliente.'; status.classList.replace('text-gray-400', 'text-emerald-400'); }
+            else { status.innerText = '❌ Pendente de assinatura.'; status.classList.replace('text-emerald-400', 'text-gray-400'); }
+        }
+
+        function imprimirEEnviar(tipo) {
+            const orcId = document.getElementById('os-orcamento').value;
+            if(!orcId) return alert('Selecione um documento na lista primeiro!');
+            
+            const orcamento = orcamentos.find(o => o.id == parseInt(orcId));
+            const cliente = clientes.find(c => c.id == orcamento.clienteId) || { nome: 'Cliente', tel: '', end: '' };
+            let tipoTitulo = tipo === 'Orçamento' ? 'Orçamento' : tipo === 'OS' ? 'Ordem de Serviço' : 'Recibo';
+
+            document.getElementById('print-info').innerHTML = `<div><p><strong>${tipoTitulo === 'Recibo' ? 'Recibo de Pagamento' : tipoTitulo}:</strong> ${orcamento.osNumber}</p><p><strong>Cliente:</strong> ${cliente.nome}</p>${cliente.end ? `<p><strong>Endereço:</strong> ${cliente.end}</p>` : ''}</div><div style="text-align: right;"><p><strong>Data:</strong> ${orcamento.data}</p><p><strong>Telefone:</strong> ${cliente.tel || 'Não informado'}</p></div>`;
+            document.getElementById('print-servicos').innerText = orcamento.desc || '';
+            document.getElementById('print-obs').innerText = orcamento.obs || "Sem observações adicionais.";
+            
+            let htmlMateriais = `<strong>Fornecimento:</strong> ${orcamento.materiaisStatus || ''}`;
+            if (orcamento.materiaisLista && orcamento.materiaisLista.trim() !== '') htmlMateriais += `<br><br><strong>Lista detalhada:</strong><br>${orcamento.materiaisLista}`;
+            document.getElementById('print-materiais').innerHTML = htmlMateriais;
+
+            const valorTotal = parseFloat(orcamento.valor || 0);
+            document.getElementById('print-valor-total').innerText = valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+
+            document.getElementById('print-rodape-data').innerText = `São Luís - MA, ${orcamento.data}`;
+            if(orcamento.data && orcamento.data.includes('/')) {
+                const partes = orcamento.data.split('/');
+                const dataObj = new Date(partes[2], partes[1] - 1, partes[0]);
+                dataObj.setDate(dataObj.getDate() + 10);
+                document.getElementById('print-validade').innerHTML = `Documento válido até <strong>${dataObj.toLocaleDateString('pt-BR')}</strong>.`;
+            }
+
+            const sf = document.getElementById('print-section-fotos');
+            if(orcamento.fotos && orcamento.fotos.length > 0) { 
+                sf.style.display = 'block'; 
+                document.getElementById('print-fotos-container').innerHTML = orcamento.fotos.map(src => `<img src="${src}">`).join(''); 
+            } else { 
+                sf.style.display = 'none'; 
+            }
+
+            const imgAss = document.getElementById('print-img-assinatura');
+            if(imgAss) {
+                if(orcamento.assinaturaCliente) { imgAss.src = orcamento.assinaturaCliente; imgAss.style.display = 'block'; } 
+                else { imgAss.style.display = 'none'; }
+            }
+            const assCliNome = document.getElementById('print-assinatura-cliente');
+            if(assCliNome) assCliNome.innerText = cliente.nome;
+
+            let linkWhatsApp = null;
+            if(cliente.tel) {
+                let telRaw = cliente.tel.replace(/\D/g, '');
+                if(telRaw.length === 10 || telRaw.length === 11) telRaw = "55" + telRaw;
+
+                // Link para proposta interativa online (se hospedado ou local)
+                const linkProposta = window.location.origin.includes('http') 
+                    ? `${window.location.origin}/proposta.html?id=${orcamento.id}` 
+                    : `../proposta.html?id=${orcamento.id}`;
+
+                const txt = `Olá *${cliente.nome}*, tudo bem?\n\nAqui é da equipe técnica da *ARPC Elétrica*.\nReferente ao seu atendimento, geramos o seu documento (OS: ${orcamento.osNumber}).\n\n*Acesse sua proposta online interativa:*\n${linkProposta}\n\n*Valor Total:* R$ ${valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}\n\nEstou enviando também o PDF em anexo!\n\nA ARPC Elétrica agradece a preferência!`;
+                linkWhatsApp = `https://api.whatsapp.com/send?phone=${telRaw}&text=${encodeURIComponent(txt)}`;
+            }
+
+            const tituloOriginal = document.title;
+            document.title = `${tipoTitulo}_${orcamento.osNumber}_${cliente.nome}`;
+            window.print();
+            document.title = tituloOriginal;
+
+            setTimeout(() => {
+                if(linkWhatsApp) window.open(linkWhatsApp, '_blank');
+                else alert('O WhatsApp não abriu porque o cliente não tem um telefone válido.');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
