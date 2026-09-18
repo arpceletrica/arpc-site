@@ -138,14 +138,14 @@
             <h2 class="text-white text-xl font-black mb-1">Acesso Restrito</h2>
             <p class="text-zinc-400 text-xs mb-6 text-center">Faça login para gerenciar as ordens de serviço e clientes da ARPC Elétrica.</p>
             
-            <form id="form-login" onsubmit="realizarLogin(event)" class="flex flex-col items-center gap-4 w-full">
+            <form id="form-login" action="javascript:void(0);" onsubmit="event.preventDefault(); realizarLogin(event); return false;" class="flex flex-col items-center gap-4 w-full">
                 <div class="w-full text-left">
                     <label for="login-email" class="text-xs font-bold text-zinc-400">E-mail de Acesso</label>
-                    <input type="email" id="login-email" class="w-full bg-[#12161f] border border-zinc-800 text-white p-3 rounded-xl text-sm outline-none focus:border-yellow-500" placeholder="arpceletrica@gmail.com" required>
+                    <input type="email" id="login-email" class="w-full bg-[#12161f] border border-zinc-800 text-white p-3 rounded-xl text-sm outline-none focus:border-yellow-500" placeholder="arpceletrica@gmail.com" required autocomplete="username">
                 </div>
                 <div class="w-full text-left">
                     <label for="login-password" class="text-xs font-bold text-zinc-400">Senha</label>
-                    <input type="password" id="login-password" class="w-full bg-[#12161f] border border-zinc-800 text-white p-3 rounded-xl text-sm outline-none focus:border-yellow-500" placeholder="••••••••" required>
+                    <input type="password" id="login-password" class="w-full bg-[#12161f] border border-zinc-800 text-white p-3 rounded-xl text-sm outline-none focus:border-yellow-500" placeholder="••••••••" required autocomplete="current-password">
                 </div>
                 
                 <!-- WIDGET RECAPTCHA V2 OFICIAL ARPC -->
@@ -156,7 +156,7 @@
                 <!-- ALERTA VISUAL DE ERRO DE LOGIN -->
                 <div id="login-error-alert" class="hidden w-full p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs text-center font-medium"></div>
 
-                <button type="submit" id="btn-login-submit" class="w-full btn-brand py-3.5 rounded-xl shadow-lg transition text-sm flex items-center justify-center gap-2 font-bold">
+                <button type="button" onclick="realizarLogin(event)" id="btn-login-submit" class="w-full btn-brand py-3.5 rounded-xl shadow-lg transition text-sm flex items-center justify-center gap-2 font-bold cursor-pointer">
                     Entrar no Sistema
                 </button>
             </form>
@@ -495,8 +495,18 @@
             }
         }
 
+        // Limpa parâmetro de formulário acidental na URL se houver
+        if (window.location.search.includes('g-recaptcha-response')) {
+            try {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } catch(qErr){}
+        }
+
         async function realizarLogin(e) {
-            e.preventDefault();
+            if (e) {
+                if (typeof e.preventDefault === 'function') e.preventDefault();
+                if (typeof e.stopPropagation === 'function') e.stopPropagation();
+            }
             const errAlert = document.getElementById('login-error-alert');
             if (errAlert) errAlert.classList.add('hidden');
 
@@ -637,6 +647,19 @@
         window.onload = () => {
             checkSession();
             initApp();
+
+            // Permite submissão ao pressionar Enter sem recarregar a página
+            ['login-email', 'login-password'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('keydown', (ev) => {
+                        if (ev.key === 'Enter') {
+                            ev.preventDefault();
+                            realizarLogin(ev);
+                        }
+                    });
+                }
+            });
         };
 
         function mudarAba(aba) {
