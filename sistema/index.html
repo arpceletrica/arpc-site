@@ -141,7 +141,7 @@
             <form id="form-login" onsubmit="realizarLogin(event)" class="flex flex-col items-center gap-4 w-full">
                 <div class="w-full text-left">
                     <label for="login-email" class="text-xs font-bold text-zinc-400">E-mail de Acesso</label>
-                    <input type="email" id="login-email" class="w-full bg-[#12161f] border border-zinc-800 text-white p-3 rounded-xl text-sm outline-none focus:border-yellow-500" placeholder="admin@arpceletrica.site" required>
+                    <input type="email" id="login-email" class="w-full bg-[#12161f] border border-zinc-800 text-white p-3 rounded-xl text-sm outline-none focus:border-yellow-500" placeholder="arpceletrica@gmail.com" required>
                 </div>
                 <div class="w-full text-left">
                     <label for="login-password" class="text-xs font-bold text-zinc-400">Senha</label>
@@ -153,7 +153,10 @@
                     <div class="g-recaptcha" data-sitekey="6Lc5esEtAAAAAKa5VZh0vK2RUgxWBtdkNCipgr97" data-theme="dark"></div>
                 </div>
                 
-                <button type="submit" id="btn-login-submit" class="w-full btn-brand py-3.5 rounded-xl shadow-lg transition text-sm">
+                <!-- ALERTA VISUAL DE ERRO DE LOGIN -->
+                <div id="login-error-alert" class="hidden w-full p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs text-center font-medium"></div>
+
+                <button type="submit" id="btn-login-submit" class="w-full btn-brand py-3.5 rounded-xl shadow-lg transition text-sm flex items-center justify-center gap-2 font-bold">
                     Entrar no Sistema
                 </button>
             </form>
@@ -494,10 +497,31 @@
 
         async function realizarLogin(e) {
             e.preventDefault();
-            if (!supabase) { alert("Erro: Supabase não conectado."); return; }
+            const errAlert = document.getElementById('login-error-alert');
+            if (errAlert) errAlert.classList.add('hidden');
+
+            if (!supabase) { 
+                if (errAlert) {
+                    errAlert.textContent = "Erro interno: Conexão com Supabase indisponível.";
+                    errAlert.classList.remove('hidden');
+                } else {
+                    alert("Erro interno: Conexão com Supabase indisponível.");
+                }
+                return; 
+            }
             
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+            const emailInput = document.getElementById('login-email');
+            const passwordInput = document.getElementById('login-password');
+            const email = (emailInput?.value || '').trim().toLowerCase();
+            const password = (passwordInput?.value || '').trim();
+
+            if (!email || !password) {
+                if (errAlert) {
+                    errAlert.textContent = "Por favor, preencha o e-mail e a senha.";
+                    errAlert.classList.remove('hidden');
+                }
+                return;
+            }
 
             // Validação reCAPTCHA v2 Oficial
             const isLocal = isLocalEnvironment();
@@ -513,17 +537,42 @@
 
             // Se estiver em produção e o token não foi gerado, exige o preenchimento
             if (!isLocal && !captchaToken) {
-                alert("Por favor, confirme que você não é um robô no reCAPTCHA.");
+                if (errAlert) {
+                    errAlert.textContent = "Por favor, marque a caixa 'Não sou um robô'.";
+                    errAlert.classList.remove('hidden');
+                } else {
+                    alert("Por favor, confirme que você não é um robô no reCAPTCHA.");
+                }
                 return;
             }
 
             const btnSubmit = document.getElementById('btn-login-submit');
-            if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.innerText = "Autenticando..."; }
+            if (btnSubmit) { 
+                btnSubmit.disabled = true; 
+                btnSubmit.innerHTML = `
+                    <svg class="animate-spin h-4 w-4 text-black inline" viewBox="0 0 24 24" fill="none">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span>Autenticando...</span>
+                `; 
+            }
 
             try {
                 const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
                 if (error) {
-                    alert("Erro ao entrar: " + (error.message || "Verifique seu e-mail e senha no Supabase."));
+                    let msg = error.message || "Erro ao efetuar login.";
+                    if (msg.includes("Invalid login credentials") || msg.includes("invalid_credentials")) {
+                        msg = "E-mail ou senha incorretos. Confira se você usou arpceletrica@gmail.com.";
+                    } else if (msg.includes("Email not confirmed")) {
+                        msg = "E-mail ainda não confirmado no Supabase.";
+                    }
+                    if (errAlert) {
+                        errAlert.textContent = msg;
+                        errAlert.classList.remove('hidden');
+                    } else {
+                        alert("Erro ao entrar: " + msg);
+                    }
                     if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
                         try { grecaptcha.reset(); } catch(rErr) {}
                     }
@@ -533,7 +582,13 @@
                     await initApp();
                 }
             } catch(err) {
-                alert("Falha na autenticação: " + err.message);
+                const errMsg = "Falha na conexão: " + (err.message || err);
+                if (errAlert) {
+                    errAlert.textContent = errMsg;
+                    errAlert.classList.remove('hidden');
+                } else {
+                    alert(errMsg);
+                }
                 if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerText = "Entrar no Sistema"; }
             }
         }
