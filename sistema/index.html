@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BRvolts - Gestão Empresarial</title>
+    <title>ARPC Elétrica - Gestão Empresarial</title>
     
     <meta name="theme-color" content="#09090b" id="theme-color-meta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,10 +18,10 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8'
+                            50: '#fefce8',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            700: '#a16207'
                         }
                     }
                 }
@@ -51,7 +51,7 @@
             width: 100%;
             max-width: 1200px;
             height: 380px;
-            background: radial-gradient(circle 350px at 50% -20%, rgba(37, 99, 235, 0.15), transparent 80%);
+            background: radial-gradient(circle 350px at 50% -20%, rgba(234, 179, 8, 0.12), transparent 80%);
             pointer-events: none;
             z-index: 0;
         }
@@ -104,8 +104,8 @@
         .nav-btn svg { width: 22px; height: 22px; margin-bottom: 3px; transition: transform 0.2s ease; }
         .nav-btn:hover { color: #d4d4d8; }
         .nav-btn.active { 
-            color: #60a5fa; 
-            background: rgba(59, 130, 246, 0.12);
+            color: #eab308; 
+            background: rgba(234, 179, 8, 0.12);
         }
         .nav-btn.active svg { transform: translateY(-1px); }
 
@@ -170,9 +170,9 @@
             transition: all 0.2s ease; 
         }
         input:focus, textarea:focus, select:focus { 
-            border-color: #3b82f6; 
+            border-color: #eab308; 
             background-color: rgba(24, 24, 27, 1);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); 
+            box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.15); 
         }
         label { 
             font-size: 0.8rem; 
@@ -186,7 +186,7 @@
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
         input[type="file"] { display: none; }
-        input[type="checkbox"].chk-custom { width: 18px; height: 18px; accent-color: #3b82f6; cursor: pointer; margin-top: 0; }
+        input[type="checkbox"].chk-custom { width: 18px; height: 18px; accent-color: #eab308; cursor: pointer; margin-top: 0; }
         
         .file-upload-btn { 
             display: inline-flex; 
@@ -235,8 +235,8 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
         }
 
-        .toggle-checkbox:checked { right: 0; border-color: #3b82f6; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
+        .toggle-checkbox:checked { right: 0; border-color: #eab308; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #eab308; }
 
         .kanban-board { display: flex; flex-direction: column; gap: 1rem; padding-bottom: 1rem; }
         .kanban-col { 
@@ -277,7 +277,7 @@
         body.light-mode .bottom-nav { background-color: rgba(255, 255, 255, 0.88); border-color: rgba(0, 0, 0, 0.08); box-shadow: 0 10px 30px -5px rgba(0,0,0,0.08); }
         body.light-mode .nav-btn { color: #71717a; }
         body.light-mode .nav-btn:hover { color: #18181b; }
-        body.light-mode .nav-btn.active { color: #2563eb; background: rgba(37, 99, 235, 0.08); }
+        body.light-mode .nav-btn.active { color: #ca8a04; background: rgba(202, 138, 4, 0.08); }
         body.light-mode .glass-panel, body.light-mode .modal-content, body.light-mode .kanban-card { background-color: #ffffff; border-color: #e4e4e7; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.05); }
         body.light-mode .kanban-col { background-color: #f1f2f6; border-color: #e4e4e7; }
         body.light-mode input, body.light-mode textarea, body.light-mode select { background-color: #ffffff; border-color: #d4d4d8; color: #18181b; }
@@ -291,7 +291,7 @@
         body.light-mode .file-upload-btn { background-color: #f4f4f5; color: #3f3f46; border-color: #d4d4d8; }
 
         #global-loader { position: fixed; inset: 0; background: rgba(9, 9, 11, 0.85); backdrop-filter: blur(8px); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .spinner { border: 3px solid rgba(255,255,255,0.08); border-left-color: #3b82f6; border-radius: 50%; width: 44px; height: 44px; animation: spin 0.8s linear infinite; }
+        .spinner { border: 3px solid rgba(255,255,255,0.08); border-left-color: #eab308; border-radius: 50%; width: 44px; height: 44px; animation: spin 0.8s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         #toast-container { position: fixed; top: 1.25rem; right: 1.25rem; z-index: 10000; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -299,7 +299,7 @@
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.success { background: linear-gradient(135deg, #16a34a, #15803d); border: 1px solid rgba(255,255,255,0.15); }
         .toast.error { background: linear-gradient(135deg, #dc2626, #b91c1c); border: 1px solid rgba(255,255,255,0.15); }
-        .toast.info { background: linear-gradient(135deg, #2563eb, #1d4ed8); border: 1px solid rgba(255,255,255,0.15); }
+        .toast.info { background: linear-gradient(135deg, #ca8a04, #a16207); border: 1px solid rgba(255,255,255,0.15); }
 
         #login-screen { 
             position: fixed; 
@@ -359,9 +359,9 @@
             .payment-conditions { width: 55%; font-size: 7.5pt; }
             .payment-conditions p { margin: 1.5px 0; }
             
-            .pix-box { width: 42%; background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; padding: 5px 8px; font-size: 7.5pt; display: flex; align-items: center; gap: 6px; }
+            .pix-box { width: 42%; background-color: #fefce8; border: 1px solid #fde047; border-radius: 4px; padding: 5px 8px; font-size: 7.5pt; display: flex; align-items: center; gap: 6px; }
             .pix-box-info { flex: 1; }
-            .pix-box-info h4 { margin: 0 0 2px 0; color: #166534; font-size: 8pt; display: flex; align-items: center; gap: 3px; }
+            .pix-box-info h4 { margin: 0 0 2px 0; color: #854d0e; font-size: 8pt; display: flex; align-items: center; gap: 3px; }
             .pix-box-info p { margin: 1px 0; line-height: 1.15; font-size: 7pt; }
             .pix-qr { width: 52px; height: 52px; }
 
@@ -386,27 +386,27 @@
 
     <div class="ambient-glow"></div>
 
-    <!-- TELA DE LOGIN REATIVADA -->
+    <!-- TELA DE LOGIN -->
     <div id="login-screen">
         <div class="w-full max-w-sm glass-panel p-8 flex flex-col items-center border border-white/10 shadow-2xl">
-            <img src="https://www.brvolts.site/logo1.png" alt="BRvolts Logo" class="h-14 object-contain mb-6">
+            <img src="logopng.png" onerror="this.onerror=null; this.src='../logopng.png';" alt="ARPC Elétrica Logo" class="h-14 object-contain mb-6">
             <h2 class="text-white text-xl font-extrabold mb-1">Acesso Restrito</h2>
-            <p class="text-zinc-400 text-xs mb-6 text-center">Faça login para gerenciar a BRvolts.</p>
+            <p class="text-zinc-400 text-xs mb-6 text-center">Faça login para gerenciar a ARPC Elétrica.</p>
             
-            <form id="form-login" onsubmit="realizarLogin(event)" class="flex flex-col items-center gap-4 w-full">
+            <form id="form-login" action="javascript:void(0);" onsubmit="event.preventDefault(); realizarLogin(event); return false;" class="flex flex-col items-center gap-4 w-full">
                 <div class="w-full">
                     <label for="login-email" class="text-[11px] text-zinc-400">E-mail</label>
-                    <input type="email" id="login-email" class="w-full bg-zinc-900 border-white/10 text-white p-3 rounded-xl text-sm" placeholder="seu@email.com" required>
+                    <input type="email" id="login-email" class="w-full bg-zinc-900 border-white/10 text-white p-3 rounded-xl text-sm" placeholder="seu@email.com" required autocomplete="username">
                 </div>
                 <div class="w-full">
                     <label for="login-password" class="text-[11px] text-zinc-400">Senha</label>
-                    <input type="password" id="login-password" class="w-full bg-zinc-900 border-white/10 text-white p-3 rounded-xl text-sm" placeholder="••••••••" required>
+                    <input type="password" id="login-password" class="w-full bg-zinc-900 border-white/10 text-white p-3 rounded-xl text-sm" placeholder="••••••••" required autocomplete="current-password">
                 </div>
                 
-                <!-- CAIXA DO RECAPTCHA REATIVADA -->
-                <div class="g-recaptcha my-2" data-sitekey="6Ld1jnctAAAAACYonu6H7-ngQzbOu3wpgkg9BW5I" data-theme="dark"></div>
+                <!-- CAIXA DO RECAPTCHA REATIVADA COM CHAVE DA ARPC -->
+                <div class="g-recaptcha my-2" data-sitekey="6Lc5esEtAAAAAKa5VZh0vK2RUgxWBtdkNCipgr97" data-theme="dark"></div>
                 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition text-sm">Autenticar</button>
+                <button type="submit" id="btn-login-submit" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-500/20 transition text-sm">Autenticar</button>
             </form>
         </div>
     </div>
@@ -422,14 +422,14 @@
 
     <header class="fixed top-0 w-full z-40 bg-zinc-950/70 backdrop-blur-xl border-b border-white/5 px-4 md:px-8 py-3 flex items-center justify-between transition-colors duration-300">
         <div class="flex items-center gap-3">
-            <button onclick="abrirCalculadora()" class="w-9 h-9 rounded-xl bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 flex items-center justify-center transition border border-blue-500/20 shadow-sm" title="Calculadora de Dimensionamento">
+            <button onclick="abrirCalculadora()" class="w-9 h-9 rounded-xl bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 flex items-center justify-center transition border border-yellow-500/20 shadow-sm" title="Calculadora de Dimensionamento">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
             </button>
             <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400 hidden sm:inline">Calculadora</span>
         </div>
 
         <div class="flex items-center">
-            <img src="https://www.brvolts.site/logo1.png" alt="BRvolts Logo" class="h-7 object-contain">
+            <img src="logopng.png" alt="ARPC Elétrica Logo" class="h-8 object-contain">
         </div>
 
         <div class="flex items-center gap-2">
@@ -496,7 +496,7 @@
                         </select>
                         <button onclick="forcarSincronizacao()" title="Sincronizar Dados" class="bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 py-2.5 px-3 rounded-xl border border-white/5 transition text-xs font-bold">🔄</button>
                         <button onclick="exportarCSV()" title="Exportar Excel" class="bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-400 py-2.5 px-3.5 rounded-xl border border-emerald-500/20 transition text-xs font-bold">📥 CSV</button>
-                        <button onclick="exportarJSON()" title="Salvar Backup de Segurança" class="bg-purple-600/10 hover:bg-purple-600/20 text-purple-400 py-2.5 px-3.5 rounded-xl border border-purple-500/20 transition text-xs font-bold">💾 Backup</button>
+                        <button onclick="exportarJSON()" title="Salvar Backup de Segurança" class="bg-yellow-600/10 hover:bg-yellow-600/20 text-yellow-400 py-2.5 px-3.5 rounded-xl border border-yellow-500/20 transition text-xs font-bold">💾 Backup</button>
                         <button onclick="fazerLogout()" title="Sair do Sistema" class="bg-red-600/10 hover:bg-red-600/20 text-red-400 py-2.5 px-3.5 rounded-xl border border-red-500/20 transition text-xs font-bold">Sair</button>
                     </div>
                 </div>
@@ -539,11 +539,11 @@
                         <p class="text-2xl sm:text-3xl font-extrabold text-emerald-400 tracking-tight" id="dash-faturamento">R$ 0,00</p>
                     </div>
                     <div class="glass-panel p-5 relative overflow-hidden group">
-                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition"></div>
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition"></div>
                         <p class="text-xs text-zinc-400 font-semibold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-blue-400"></span> Lucro Líquido
+                            <span class="w-2 h-2 rounded-full bg-yellow-400"></span> Lucro Líquido
                         </p>
-                        <p class="text-2xl sm:text-3xl font-extrabold text-blue-400 tracking-tight" id="dash-lucro">R$ 0,00</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold text-yellow-400 tracking-tight" id="dash-lucro">R$ 0,00</p>
                     </div>
                 </div>
 
@@ -570,10 +570,10 @@
                         </h3>
                         <div class="kanban-cards" id="kb-andamento"></div>
                     </div>
-                    <div class="kanban-col border-t-2 border-t-blue-500/80">
+                    <div class="kanban-col border-t-2 border-t-yellow-500/80">
                         <h3 class="font-bold text-zinc-300 mb-3 flex justify-between items-center text-xs uppercase tracking-wider">
                             Concluídos 
-                            <span class="bg-blue-500/15 text-blue-400 px-2 py-0.5 rounded-full text-xs font-semibold" id="kb-count-concluido">0</span>
+                            <span class="bg-yellow-500/15 text-yellow-400 px-2 py-0.5 rounded-full text-xs font-semibold" id="kb-count-concluido">0</span>
                         </h3>
                         <div class="kanban-cards" id="kb-concluido"></div>
                     </div>
@@ -584,7 +584,7 @@
             <div id="agenda" class="section">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div class="flex items-center gap-3">
-                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-600/15 text-blue-400 border border-blue-500/20 shadow-sm">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-yellow-500/15 text-yellow-400 border border-yellow-500/20 shadow-sm">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
                         <div>
@@ -611,8 +611,8 @@
                 </div>
 
                 <div class="glass-panel p-6 max-w-xl mb-8 space-y-4">
-                    <div><label>Nome Completo</label><input type="text" id="cli-nome" spellcheck="false" placeholder="Ex: Rafael Silva"></div>
-                    <div><label>Telefone / WhatsApp</label><input type="tel" id="cli-tel" placeholder="(21) 90000-0000" oninput="maskPhone(event)" maxlength="15"></div>
+                    <div><label>Nome Completo</label><input type="text" id="cli-nome" spellcheck="false" placeholder="Ex: Carlos Mendes"></div>
+                    <div><label>Telefone / WhatsApp</label><input type="tel" id="cli-tel" placeholder="(98) 90000-0000" oninput="maskPhone(event)" maxlength="15"></div>
                     
                     <div class="grid grid-cols-3 gap-2">
                         <div class="col-span-1"><label>CEP</label><input type="tel" id="cli-cep" placeholder="00000-000" oninput="maskCEP(event)" maxlength="9"></div>
@@ -624,10 +624,10 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div><label>Bairro</label><input type="text" id="cli-bairro" placeholder="Bairro"></div>
-                        <div><label>Cidade / UF</label><input type="text" id="cli-cidade_uf" placeholder="Cidade/UF"></div>
+                        <div><label>Cidade / UF</label><input type="text" id="cli-cidade_uf" placeholder="São Luís/MA"></div>
                     </div>
                     
-                    <button onclick="salvarCliente()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-blue-600/30 transition text-sm">Cadastrar Novo Cliente</button>
+                    <button onclick="salvarCliente()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-bold py-3 px-4 rounded-xl shadow-lg shadow-yellow-500/20 transition text-sm">Cadastrar Novo Cliente</button>
                 </div>
 
                 <div class="max-w-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
@@ -662,7 +662,7 @@
                         <label>Fornecimento de Materiais</label>
                         <select id="orc-materiais-status">
                             <option value="Por conta do cliente (Não inclusos)">Por conta do cliente (Não inclusos)</option>
-                            <option value="Fornecidos pela BRvolts (Inclusos no valor)">Fornecidos pela BRvolts (Inclusos no valor)</option>
+                            <option value="Fornecidos pela ARPC Elétrica (Inclusos no valor)">Fornecidos pela ARPC Elétrica (Inclusos no valor)</option>
                         </select>
                     </div>
                     <div><label>Lista Detalhada de Materiais</label><textarea id="orc-materiais" rows="2" spellcheck="true" lang="pt-BR" placeholder="Ex: Disjuntor Bipolar 32A, 15m Cabo 6mm..."></textarea></div>
@@ -729,7 +729,7 @@
                         </div>
                     </div>
 
-                    <button id="btn-salvar-os" onclick="salvarOrcamento()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-600/30 mt-4 transition text-sm">Salvar Orçamento (Ctrl+S)</button>
+                    <button id="btn-salvar-os" onclick="salvarOrcamento()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-yellow-500/20 mt-4 transition text-sm">Salvar Orçamento (Ctrl+S)</button>
                     <button id="btn-cancelar-edicao" onclick="cancelarEdicaoOS()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 px-4 rounded-xl mt-2 hidden transition text-sm">Cancelar Edição</button>
                 </div>
             </div>
@@ -765,7 +765,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
                         <button onclick="imprimirEEnviar('Orçamento')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold py-3.5 px-4 rounded-xl flex justify-center items-center gap-2 transition shadow-lg shadow-emerald-950/40">📄 Enviar Orçamento</button>
-                        <button onclick="imprimirEEnviar('OS')" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-3.5 px-4 rounded-xl flex justify-center items-center gap-2 transition shadow-lg shadow-blue-950/40">📋 Enviar OS</button>
+                        <button onclick="imprimirEEnviar('OS')" class="w-full bg-yellow-500 hover:bg-yellow-400 text-zinc-950 text-sm font-bold py-3.5 px-4 rounded-xl flex justify-center items-center gap-2 transition shadow-lg shadow-yellow-500/20">📋 Enviar OS</button>
                     </div>
                 </div>
             </div>
@@ -788,15 +788,15 @@
                     </div>
                 </div>
                 <div><label>Potência do Equipamento (W)</label><input type="number" id="calc-potencia" placeholder="Ex: 5500 (Chuveiro)"></div>
-                <div class="bg-blue-950/30 border border-blue-500/20 rounded-xl p-4 mt-2 hidden" id="calc-resultado">
+                <div class="bg-yellow-950/20 border border-yellow-500/20 rounded-xl p-4 mt-2 hidden" id="calc-resultado">
                     <p class="text-xs text-zinc-300">Corrente Calculada: <strong id="res-corrente" class="text-white text-base">0 A</strong></p>
-                    <p class="text-xs text-zinc-300 mt-2">Disjuntor Sugerido: <strong id="res-disjuntor" class="text-blue-400 text-base">10 A</strong></p>
+                    <p class="text-xs text-zinc-300 mt-2">Disjuntor Sugerido: <strong id="res-disjuntor" class="text-yellow-400 text-base">10 A</strong></p>
                     <p class="text-xs text-zinc-300 mt-2">Bitola Mínima: <strong id="res-bitola" class="text-emerald-400 text-base">2.5 mm²</strong></p>
                 </div>
             </div>
             <div class="flex gap-3 mt-6">
                 <button onclick="fecharCalculadora()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white py-3 rounded-xl font-bold transition text-xs">Fechar</button>
-                <button onclick="calcularDimensionamento()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold shadow-lg transition text-xs">Calcular</button>
+                <button onclick="calcularDimensionamento()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 py-3 rounded-xl font-bold shadow-lg transition text-xs">Calcular</button>
             </div>
         </div>
     </div>
@@ -816,7 +816,7 @@
             </div>
             <div class="flex gap-3 mt-6">
                 <button onclick="fecharModalDeslocamento()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white py-3 rounded-xl font-bold transition text-xs">Cancelar</button>
-                <button onclick="aplicarDeslocamento()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold shadow-lg transition text-xs">Aplicar</button>
+                <button onclick="aplicarDeslocamento()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 py-3 rounded-xl font-bold shadow-lg transition text-xs">Aplicar</button>
             </div>
         </div>
     </div>
@@ -832,7 +832,7 @@
             </div>
             <div class="flex gap-3 mt-6">
                 <button onclick="fecharModalEdicaoCliente()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white py-3 rounded-xl font-bold transition text-xs">Cancelar</button>
-                <button onclick="salvarEdicaoCliente()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold shadow-lg transition text-xs">Salvar Alterações</button>
+                <button onclick="salvarEdicaoCliente()" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 py-3 rounded-xl font-bold shadow-lg transition text-xs">Salvar Alterações</button>
             </div>
         </div>
     </div>
@@ -865,17 +865,17 @@
         <div class="doc-header">
             <div class="doc-logo">
                 <div class="doc-logo-imgs">
-                    <img src="logo_pdf.png" alt="BRvolts Logo" class="logo-img">
+                    <img src="logopng.png" alt="ARPC Elétrica Logo" class="logo-img">
                     <img src="5stars.png" alt="5 Estrelas no Google" class="stars-img">
                 </div>
-                <h2>Soluções em Eletricidade</h2>
-                <p>CNPJ: 68.694.956/0001-74</p>
+                <h2>Engenharia & Soluções Elétricas</h2>
+                <p>São Luís - MA</p>
             </div>
             <div class="doc-contacts">
                 <span id="selo-pago-topo" class="selo-pago-badge">✓ PAGO</span>
-                <p><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg> brvolts.site</p>
-                <p><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> 21 97649-3932</p>
-                <p><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> wellington.bonifacio@proton.me</p>
+                <p><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg> arpceletrica.site</p>
+                <p><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> (98) 98915-5614</p>
+                <p><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> arpceletrica@gmail.com</p>
             </div>
         </div>
         
@@ -907,8 +907,8 @@
                 <div class="pix-box" id="print-pix-box">
                     <div class="pix-box-info">
                         <h4><img src="Pix_logo.png" alt="Pix" style="height: 14px; width: auto; margin-right: 4px;">Pague com PIX</h4>
-                        <p>Chave (CNPJ): <strong>68.694.956/0001-74</strong></p>
-                        <p>Titular: Wellington Nunes Bonifácio Correa</p>
+                        <p>Chave (WhatsApp): <strong>(98) 98915-5614</strong></p>
+                        <p>Titular: ARPC Elétrica</p>
                     </div>
                     <img id="print-qrcode-pix" class="pix-qr" src="">
                 </div>
@@ -922,7 +922,7 @@
         <div class="clearfix"></div>
         
         <div class="doc-termos">
-            <p><strong>Termo de Responsabilidade:</strong> A BRvolts não se responsabiliza por tubulações obstruídas ou danos estruturais ocultos na alvenaria do imóvel não sinalizados previamente.</p>
+            <p><strong>Termo de Responsabilidade:</strong> A ARPC Elétrica não se responsabiliza por tubulações obstruídas ou danos estruturais ocultos na alvenaria do imóvel não sinalizados previamente.</p>
             <p><strong>Garantia de Qualidade:</strong> Garantia de 90 dias para a mão de obra prestada, conforme art. 26 do Código de Defesa do Consumidor (CDC).</p>
         </div>
         <div class="doc-footer">
@@ -931,8 +931,8 @@
     </div>
 
     <script>
-        let timeTrackerMeta = JSON.parse(localStorage.getItem('brvolts_timetracker')) || {};
-        function saveTimeTracker() { localStorage.setItem('brvolts_timetracker', JSON.stringify(timeTrackerMeta)); }
+        let timeTrackerMeta = JSON.parse(localStorage.getItem('arpc_timetracker')) || {};
+        function saveTimeTracker() { localStorage.setItem('arpc_timetracker', JSON.stringify(timeTrackerMeta)); }
 
         function abrirCalculadora() { document.getElementById('modal-calculadora').style.display = 'flex'; }
         function fecharCalculadora() { document.getElementById('modal-calculadora').style.display = 'none'; }
@@ -997,15 +997,20 @@
             if (clientes.length === 0 && orcamentos.length === 0) return showToast("Nenhum dado.", "error");
             const data = { clientes: clientes, orcamentos: orcamentos, tracker: timeTrackerMeta };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
-            const link = document.createElement("a"); link.setAttribute("href", dataStr); link.setAttribute("download", `brvolts_backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(link); link.click(); link.remove(); showToast("Backup baixado!", "success");
+            const link = document.createElement("a"); link.setAttribute("href", dataStr); link.setAttribute("download", `arpc_backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(link); link.click(); link.remove(); showToast("Backup baixado!", "success");
         }
 
         async function forcarSincronizacao() { document.getElementById('global-loader').style.display = 'flex'; await initApp(); showToast("Sincronizado!", "success"); }
 
         let supabaseClient = null;
         try { 
-            if (window.supabase) supabaseClient = window.supabase.createClient('https://mflvwscgghdvtxasgmdd.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mbHZ3c2NnZ2hkdnR4YXNnbWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODgyNjQsImV4cCI6MjA5ODA2NDI2NH0.tB34mGuyV-Y4xGwnF-1UANJl-p534yEmvsPPcDUA4sk'); 
+            if (window.supabase) supabaseClient = window.supabase.createClient('https://xlftxthdhjrszedlhhel.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZnR4dGhkaGpyc3plZGxoaGVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2ODI4MjMsImV4cCI6MjEwNTI1ODgyM30.jLfAF4tch7W6RNz2z6hMyNiTxOcDLvjE0Bxl3O0neMQ'); 
         } catch(e) { console.error("Erro no Supabase:", e); }
+
+        // Limpa parâmetro residual de GET acidental na URL
+        if (window.location.search && window.location.search.includes('g-recaptcha-response')) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
 
         async function checkSession() {
             if(!supabaseClient) return;
@@ -1018,23 +1023,46 @@
         }
 
         async function realizarLogin(e) {
-            e.preventDefault();
+            if (e) {
+                e.preventDefault();
+                if (e.stopPropagation) e.stopPropagation();
+            }
             if(!supabaseClient) { alert("Erro interno: Supabase não conectado."); return; }
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            const captchaResponse = grecaptcha.getResponse();
+            let captchaResponse = '';
+            try {
+                if(window.grecaptcha) captchaResponse = grecaptcha.getResponse();
+            } catch(err) {}
+
             if (!captchaResponse) {
                 alert("Por favor, confirme que você não é um robô no reCAPTCHA.");
                 return;
             }
 
             document.getElementById('global-loader').style.display = 'flex';
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+
+            let { data, error } = await supabaseClient.auth.signInWithPassword({ 
+                email: email.trim().toLowerCase(), 
+                password: password,
+                options: { captchaToken: captchaResponse }
+            });
+
+            if (error && (error.message.includes('captcha') || error.status === 400 && error.message.toLowerCase().includes('not supported'))) {
+                const retry = await supabaseClient.auth.signInWithPassword({ 
+                    email: email.trim().toLowerCase(), 
+                    password: password 
+                });
+                data = retry.data;
+                error = retry.error;
+            }
+
             if (error) {
                 document.getElementById('global-loader').style.display = 'none';
-                alert("Erro ao entrar: Verifique seu e-mail e senha."); 
-                grecaptcha.reset();
+                const msg = error.message === "Invalid login credentials" ? "E-mail ou senha incorretos." : error.message;
+                alert("Erro ao entrar: " + msg); 
+                try { grecaptcha.reset(); } catch(err) {}
             } else {
                 desbloquearApp();
             }
@@ -1070,7 +1098,7 @@
         function toggleTheme() {
             const isLight = document.body.classList.toggle('light-mode');
             const metaTheme = document.getElementById('theme-color-meta');
-            localStorage.setItem('brvolts-theme', isLight ? 'light' : 'dark'); 
+            localStorage.setItem('arpc-theme', isLight ? 'light' : 'dark'); 
             metaTheme.setAttribute('content', isLight ? '#ffffff' : '#09090b');
         }
 
@@ -1079,7 +1107,7 @@
             if (e.key === 'Escape') { fecharHistorico(); fecharModalWhatsapp(); fecharModalEdicaoCliente(); fecharCalculadora(); fecharModalDeslocamento(); }
         });
 
-        document.addEventListener('DOMContentLoaded', async () => { if(localStorage.getItem('brvolts-theme') === 'light') toggleTheme(); });
+        document.addEventListener('DOMContentLoaded', async () => { if(localStorage.getItem('arpc-theme') === 'light') toggleTheme(); });
 
         async function initApp() {
             if(supabaseClient) {
@@ -1157,7 +1185,7 @@
                     <div class="flex flex-wrap gap-1.5 shrink-0">
                         <button onclick="abrirModalEdicaoCliente(${c.id})" class="text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-1.5 rounded-lg border border-white/5 transition" title="Editar">Editar</button>
                         <button onclick="verHistoricoCliente(${c.id})" class="text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-1.5 rounded-lg border border-white/5 transition">Histórico</button>
-                        <button onclick="iniciarOS(${c.id})" class="text-xs font-bold bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-lg text-white transition">+ Novo</button>
+                        <button onclick="iniciarOS(${c.id})" class="text-xs font-bold bg-yellow-500 hover:bg-yellow-400 px-3 py-1.5 rounded-lg text-zinc-950 transition">+ Novo</button>
                         <button onclick="excluirCliente(${c.id})" class="text-xs font-semibold bg-red-950/40 hover:bg-red-900/60 text-red-400 px-2.5 py-1.5 rounded-lg border border-red-500/20 transition" title="Excluir">🗑️</button>
                     </div>
                 </li>`).join('');
@@ -1405,7 +1433,7 @@
                 const nomeCli = c ? c.nome : "Desconhecido"; const lucro = (parseFloat(o.valor || 0) - parseFloat(o.despesas || 0)).toFixed(2);
                 csvContent += `${o.osNumber},"${nomeCli}",${o.data},${o.status},${o.pago ? 'Sim' : 'Não'},${o.valor || 0},${o.despesas || 0},${lucro}\r\n`;
             });
-            const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", "brvolts_os.csv");
+            const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", "arpc_os.csv");
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
@@ -1491,7 +1519,7 @@
                     divFollow.classList.remove('hidden');
                     document.getElementById('lista-followup').innerHTML = followups.slice(0, 5).map(item => {
                         const c = clientes.find(cli => String(cli.id) === String(item.os.clienteId)); if(!c) return '';
-                        const txt = encodeURIComponent(`Olá ${c.nome}, tudo bem?\nEnviamos o orçamento da OS ${item.os.osNumber} há alguns dias. Ficou alguma dúvida técnica sobre o dimensionamento ou valores? Estou à disposição!`);
+                        const txt = encodeURIComponent(`Olá ${c.nome}, tudo bem?\nEnviamos o orçamento da OS ${item.os.osNumber} há alguns dias pela *ARPC Elétrica*. Ficou alguma dúvida técnica sobre o dimensionamento ou valores? Estou à disposição!`);
                         return `<li class="p-2.5 flex flex-col gap-1.5">
                             <p class="text-amber-400 font-bold text-xs truncate">${c.nome} <span class="text-amber-600 font-normal ml-1">Há ${item.dias}d</span></p>
                             <div class="flex gap-2 w-full">
@@ -1509,7 +1537,7 @@
                     divAlerta.classList.remove('hidden');
                     document.getElementById('lista-alertas').innerHTML = alertas.slice(0, 5).map(o => {
                         const c = clientes.find(cli => String(cli.id) === String(o.clienteId)); if(!c) return '';
-                        const txt = encodeURIComponent(`Olá ${c.nome}! Aqui é o Wellington da BRvolts. Nosso sistema avisou que faz cerca de 1 ano desde a nossa última manutenção.\nGostaria de agendar uma revisão preventiva?`);
+                        const txt = encodeURIComponent(`Olá ${c.nome}! Aqui é da *ARPC Elétrica*. Nosso sistema avisou que faz cerca de 1 ano desde a nossa última manutenção.\nGostaria de agendar uma revisão preventiva?`);
                         return `<li class="p-2.5 flex flex-col gap-1.5">
                             <p class="text-yellow-400 font-bold text-xs truncate">${c.nome}</p>
                             <div class="flex gap-2 w-full">
@@ -1528,7 +1556,7 @@
                     document.getElementById('lista-garantias').innerHTML = garantias.slice(0, 5).map(item => {
                         const c = clientes.find(cli => String(cli.id) === String(item.os.clienteId)); if(!c) return '';
                         const dias = 90 - item.dias;
-                        const txt = encodeURIComponent(`Olá *${c.nome}*, tudo bem?\nPassando pra lembrar que a garantia do serviço vence em ${dias} dia(s). Tudo operando nos conformes por aí?`);
+                        const txt = encodeURIComponent(`Olá *${c.nome}*, tudo bem? Aqui é da *ARPC Elétrica*. Passando pra lembrar que a garantia do serviço vence em ${dias} dia(s). Tudo operando nos conformes por aí?`);
                         return `<li class="p-2.5 flex flex-col gap-1.5">
                             <p class="text-blue-400 font-bold text-xs truncate">${c.nome} <span class="text-blue-600 font-normal">(${dias}d)</span></p>
                             <div class="flex gap-2 w-full">
@@ -1546,7 +1574,7 @@
                     divWallbox.classList.remove('hidden');
                     document.getElementById('lista-wallbox').innerHTML = wallboxAlerts.slice(0, 5).map(item => {
                         const c = clientes.find(cli => String(cli.id) === String(item.os.clienteId)); if(!c) return '';
-                        const txt = encodeURIComponent(`Olá *${c.nome}*, tudo bem? Aqui é o Wellington da *BRvolts*.\n\nPassando para saber como está o funcionamento do seu carregador veicular (Wallbox) e se ele está precisando de alguma verificação técnica preventiva este mês. ⚡🚘`);
+                        const txt = encodeURIComponent(`Olá *${c.nome}*, tudo bem? Aqui é da *ARPC Elétrica*.\n\nPassando para saber como está o funcionamento do seu carregador veicular (Wallbox) e se ele está precisando de alguma verificação técnica preventiva este mês. ⚡🚘`);
                         return `<li class="p-2.5 flex flex-col gap-1.5">
                             <p class="text-teal-400 font-bold text-xs truncate">${c.nome} <span class="text-teal-600 font-normal ml-1">(${item.dias}d)</span></p>
                             <div class="flex gap-2 w-full">
@@ -1567,12 +1595,12 @@
                 if(o.isWallbox) badges += `<span class="bg-teal-950/60 text-teal-300 border border-teal-500/20 text-[9px] px-1.5 py-0.5 rounded-md font-bold ml-1" title="Wallbox">⚡ WB</span>`;
                 
                 let trackerBtn = ''; let rentabilidadeHtml = '';
-                if(o.status === 'Aprovado') trackerBtn = `<button onclick="toggleTimer(${o.id})" class="w-full mt-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition">▶ Iniciar Serviço</button>`;
+                if(o.status === 'Aprovado') trackerBtn = `<button onclick="toggleTimer(${o.id})" class="w-full mt-2.5 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 text-xs font-bold py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition">▶ Iniciar Serviço</button>`;
                 else if(o.status === 'Em Andamento') trackerBtn = `<button onclick="toggleTimer(${o.id})" class="w-full mt-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition animate-pulse">⏹ Finalizar e Salvar</button>`;
 
                 if(o.status === 'Concluído' && timeTrackerMeta[o.id] && timeTrackerMeta[o.id].totalMinutos > 0) {
                     const horas = (timeTrackerMeta[o.id].totalMinutos / 60); const ganhoHora = (lucro / horas).toFixed(2);
-                    rentabilidadeHtml = `<div class="mt-2 bg-blue-950/20 border border-blue-500/20 px-2 py-1 rounded-lg flex justify-between items-center text-[10px]"><span class="text-zinc-400">Tempo: ${horas.toFixed(1)}h</span><span class="text-blue-400 font-bold">R$ ${ganhoHora}/h</span></div>`;
+                    rentabilidadeHtml = `<div class="mt-2 bg-yellow-950/20 border border-yellow-500/20 px-2 py-1 rounded-lg flex justify-between items-center text-[10px]"><span class="text-zinc-400">Tempo: ${horas.toFixed(1)}h</span><span class="text-yellow-400 font-bold">R$ ${ganhoHora}/h</span></div>`;
                 }
 
                 return `
@@ -1656,7 +1684,7 @@
                     const temServico = orcamentos.some(o => o.data === dataStr && o.status !== 'Concluído' && o.status !== 'Cancelado');
                     const isHoje = i === hoje.getDate();
                     let classes = "flex items-center justify-center h-8 w-8 rounded-xl text-xs mx-auto cursor-default transition-all ";
-                    classes += isHoje ? "bg-blue-600 text-white font-bold shadow-md shadow-blue-600/40" : "text-zinc-300 hover:bg-zinc-800/60";
+                    classes += isHoje ? "bg-yellow-500 text-zinc-950 font-bold shadow-md shadow-yellow-500/40" : "text-zinc-300 hover:bg-zinc-800/60";
                     let dot = temServico ? `<div class="w-1.5 h-1.5 bg-amber-400 rounded-full mx-auto mt-0.5"></div>` : '<div class="w-1.5 h-1.5 mx-auto mt-0.5"></div>';
                     html += `<div><div class="${classes}">${i}</div>${dot}</div>`;
                 }
@@ -1671,9 +1699,9 @@
                 const c = clientes.find(cli => String(cli.id) === String(o.clienteId));
                 const cNome = c ? c.nome : 'Desconhecido';
                 const cEnd = c && c.end ? getEnderecoVisivel(c.end) : 'Sem endereço';
-                return `<li class="glass-panel p-4 hover:border-blue-500/30 transition">
+                return `<li class="glass-panel p-4 hover:border-yellow-500/30 transition">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-[11px] bg-blue-950/60 text-blue-400 border border-blue-500/20 px-2.5 py-0.5 rounded-full font-bold">📅 ${o.data}</span>
+                        <span class="text-[11px] bg-yellow-950/60 text-yellow-400 border border-yellow-500/20 px-2.5 py-0.5 rounded-full font-bold">📅 ${o.data}</span>
                         <span class="text-[11px] text-zinc-400 font-semibold">OS: ${o.osNumber}</span>
                     </div>
                     <p class="font-bold text-white text-base">${cNome}</p>
@@ -1681,7 +1709,7 @@
                     <p class="text-xs text-zinc-400 mt-1 flex items-center gap-1">📍 ${cEnd}</p>
                     <div class="flex gap-2 mt-4 pt-3 border-t border-white/5">
                         <button onclick="enviarLembrete(${o.id})" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-amber-300 text-xs font-bold py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 transition">💬 Confirmar Visita</button>
-                        <button onclick="estouACaminho(${o.id})" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 transition">🚗 Estou a Caminho</button>
+                        <button onclick="estouACaminho(${o.id})" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 text-xs font-bold py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 transition">🚗 Estou a Caminho</button>
                     </div>
                 </li>`;
             }).join('');
@@ -1695,7 +1723,7 @@
             let tel = c.tel.replace(/\D/g, '');
             if(tel.length === 10 || tel.length === 11) tel = "55" + tel;
             
-            const msg = encodeURIComponent(`Olá *${c.nome}*, tudo bem?\nAqui é o Wellington da *BRvolts*. Passando para confirmar nossa visita técnica agendada para o dia *${o.data}* (OS: ${o.osNumber}). Tudo certo por aí?`);
+            const msg = encodeURIComponent(`Olá *${c.nome}*, tudo bem?\nAqui é da *ARPC Elétrica*. Passando para confirmar nossa visita técnica agendada para o dia *${o.data}* (OS: ${o.osNumber}). Tudo certo por aí?`);
             window.open(`https://api.whatsapp.com/send?phone=${tel}&text=${msg}`, '_blank');
         }
 
@@ -1712,7 +1740,7 @@
                 window.open(mapsUrl, '_blank');
             }
 
-            const msg = encodeURIComponent(`Olá *${c.nome}*, tudo bem?\nWellington da *BRvolts* aqui. Estou saindo para o atendimento agora e a caminho do seu endereço! Chego em instantes. 🚗⚡`);
+            const msg = encodeURIComponent(`Olá *${c.nome}*, tudo bem?\n*ARPC Elétrica* aqui. Estou saindo para o atendimento agora e a caminho do seu endereço! Chego em instantes. 🚗⚡`);
             setTimeout(() => {
                 window.open(`https://api.whatsapp.com/send?phone=${tel}&text=${msg}`, '_blank');
             }, 500);
@@ -1838,12 +1866,12 @@
                     if (seloPagoTotal) seloPagoTotal.classList.remove('ativo');
                     if (pixBox) { 
                         pixBox.style.display = 'flex'; 
-                        document.getElementById('print-qrcode-pix').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(gerarPayloadPix('68694956000174', 'Wellington Nunes Bonifacio', 'Marica', valorTotal))}`; 
+                        document.getElementById('print-qrcode-pix').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(gerarPayloadPix('9889155614', 'ARPC Eletrica', 'Sao Luis', valorTotal))}`; 
                     }
                 }
 
                 const textoFormas = `<p><strong>Formas aceitas:</strong></p><p>• PIX Escaneável (Ao lado)</p><p>• Dinheiro / Débito / Crédito*</p>`;
-                const textoPago = `<p><strong>Situação:</strong> <span style="color: #16a34a; font-weight: bold;">SERVIÇO PAGO</span></p><p>Obrigado pela preferência e confiança na BRvolts!</p>`;
+                const textoPago = `<p><strong>Situação:</strong> <span style="color: #16a34a; font-weight: bold;">SERVIÇO PAGO</span></p><p>Obrigado pela preferência e confiança na ARPC Elétrica!</p>`;
 
                 if (tipo === 'Orçamento') {
                     condicoesContainer.innerHTML = `<h3>Pagamento</h3>` + textoFormas;
@@ -1854,23 +1882,21 @@
                 let linkWhatsApp = null;
                 if(cliente.tel) {
                     let telRaw = String(cliente.tel).replace(/\D/g, ''); if(telRaw.length === 10 || telRaw.length === 11) telRaw = "55" + telRaw;
-                    const baseUrlVercel = "https://sistema-sepia-six.vercel.app";
-                    const linkProposta = `${baseUrlVercel}/?id=${orcamento.id}`;
+                    const baseUrl = window.location.origin;
+                    const linkProposta = `${baseUrl}/proposta.html?id=${orcamento.id}`;
                     let tipoDocText = tipo === 'Orçamento' ? 'orçamento' : 'ordem de serviço';
                     const valorFormatado = valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
                     const osNumeroFinal = orcamento.osNumber || '001';
 
                     const blocoValor = (tipo === 'Orçamento') ? '' : `*Valor Total:* R$ ${valorFormatado}\n\n`;
-                    const blocoAvaliacao = (tipo === 'Orçamento') ? '' : `⭐⭐⭐⭐⭐ Se puder dar uma força, avalie nosso atendimento no Google:\nhttps://g.page/r/CbiafVBOu7JAEBM/review\n\n`;
 
                     const txtMsg = 
-                    `Olá *${cliente.nome}*, tudo bem? Aqui é o Wellington da *BRvolts*.\n\n` +
+                    `Olá *${cliente.nome}*, tudo bem? Aqui é da *ARPC Elétrica*.\n\n` +
                     `Segue o seu ${tipoDocText} (OS: ${osNumeroFinal}).\n\n` +
                     `*Acesse o link interativo:*\n${linkProposta}\n\n` +
                     blocoValor +
                     `Você pode conferir todos os detalhes clicando no link acima ou visualizando o PDF que estou enviando logo a seguir.\n\n` +
-                    blocoAvaliacao +
-                    `A BRvolts agradece a confiança!\n\n` +
+                    `A ARPC Elétrica agradece a confiança!\n\n` +
                     `_Esta é uma mensagem automática gerada pelo sistema._`;
 
                     linkWhatsApp = `https://api.whatsapp.com/send?phone=${telRaw}&text=${encodeURIComponent(txtMsg)}`;
