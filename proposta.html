@@ -163,7 +163,7 @@
         <div class="bg-zinc-950/80 backdrop-blur-xl p-8 md:p-10 text-center border-b border-white/5 relative">
             <img src="logopng.png" alt="ARPC Elétrica" class="h-12 md:h-14 mx-auto mb-3 object-contain" onerror="this.style.display='none'">
             <h1 class="text-white text-xl md:text-2xl font-extrabold tracking-tight">Proposta Comercial de Serviço</h1>
-            <p class="text-yellow-400 text-[11px] md:text-xs mt-1 font-bold tracking-widest uppercase">ARPC Elétrica • Engenharia & Soluções</p>
+            <p class="text-yellow-400 text-[11px] md:text-xs mt-1 font-bold tracking-widest uppercase">ARPC Elétrica</p>
         </div>
 
         <div id="banner-vencida" class="hidden bg-rose-950/60 border-y border-rose-500/30 text-rose-300 text-center text-xs font-bold uppercase tracking-wider px-4 py-2.5">
@@ -448,7 +448,7 @@
 
         function baixarContato() {
             acionarVibracao(30);
-            const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:ARPC Elétrica - Atendimento\nORG:ARPC Elétrica Engenharia & Soluções\nTITLE:Especialista em Wallbox e Instalações Elétricas\nTEL;TYPE=WORK,VOICE:+${CONFIG.whatsapp}\nURL:https://www.arpceletrica.site\nNOTE:Atendimento São Luís/MA e região. Instalações elétricas padrão NBR 5410 e NBR 17019.\nEND:VCARD`;
+            const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:ARPC Elétrica - Atendimento\nORG:ARPC Elétrica\nTITLE:Especialista em Wallbox e Instalações Elétricas\nTEL;TYPE=WORK,VOICE:+${CONFIG.whatsapp}\nURL:https://www.arpceletrica.site\nNOTE:Atendimento São Luís/MA e região. Instalações elétricas padrão NBR 5410 e NBR 17019.\nEND:VCARD`;
             const blob = new Blob([vcard], { type: 'text/vcard' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = 'ARPC_Eletrica_Contato.vcf';
