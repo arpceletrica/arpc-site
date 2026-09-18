@@ -907,7 +907,7 @@
                 <div class="pix-box" id="print-pix-box">
                     <div class="pix-box-info">
                         <h4><img src="Pix_logo.png" alt="Pix" style="height: 14px; width: auto; margin-right: 4px;">Pague com PIX</h4>
-                        <p>Chave (WhatsApp): <strong>(98) 98915-5614</strong></p>
+                        <p>Chave (E-mail): <strong>arpceletrica@gmail.com</strong></p>
                         <p>Titular: ARPC Elétrica</p>
                     </div>
                     <img id="print-qrcode-pix" class="pix-qr" src="">
@@ -1866,7 +1866,7 @@
                     if (seloPagoTotal) seloPagoTotal.classList.remove('ativo');
                     if (pixBox) { 
                         pixBox.style.display = 'flex'; 
-                        document.getElementById('print-qrcode-pix').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(gerarPayloadPix('9889155614', 'ARPC Eletrica', 'Sao Luis', valorTotal))}`; 
+                        document.getElementById('print-qrcode-pix').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(gerarPayloadPix('arpceletrica@gmail.com', 'ARPC Eletrica', 'Sao Luis', valorTotal))}`; 
                     }
                 }
 
