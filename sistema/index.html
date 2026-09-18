@@ -1889,6 +1889,7 @@
                     const osNumeroFinal = orcamento.osNumber || '001';
 
                     const blocoValor = (tipo === 'Orçamento') ? '' : `*Valor Total:* R$ ${valorFormatado}\n\n`;
+                    const blocoAvaliacao = (tipo === 'Orçamento') ? '' : `⭐⭐⭐⭐⭐ Se puder dar uma força, avalie nosso atendimento no Google:\nhttps://g.page/r/CdREvbcxwPGpEAE/review\n\n`;
 
                     const txtMsg = 
                     `Olá *${cliente.nome}*, tudo bem? Aqui é da *ARPC Elétrica*.\n\n` +
@@ -1896,6 +1897,7 @@
                     `*Acesse o link interativo:*\n${linkProposta}\n\n` +
                     blocoValor +
                     `Você pode conferir todos os detalhes clicando no link acima ou visualizando o PDF que estou enviando logo a seguir.\n\n` +
+                    blocoAvaliacao +
                     `A ARPC Elétrica agradece a confiança!\n\n` +
                     `_Esta é uma mensagem automática gerada pelo sistema._`;
 
